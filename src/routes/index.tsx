@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Home from '../pages/Home';
 import About from '../pages/About';
@@ -14,7 +14,7 @@ import { ScrollToTop } from '../components/ScrollToTop';
 
 export const AppRoutes: React.FC = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ScrollToTop />
       <Layout>
         <Routes>
@@ -34,7 +34,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="*" element={<Home />} />
         </Routes>
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 export default AppRoutes;
