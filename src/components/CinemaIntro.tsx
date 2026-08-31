@@ -162,6 +162,11 @@ export const CinemaIntro: React.FC = () => {
                   <img
                     src={logoImg}
                     alt="مقرأة بالقرآن نحيا"
+                    width={96}
+                    height={96}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                     className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(212,175,55,0.7)]"
                   />
                 </div>

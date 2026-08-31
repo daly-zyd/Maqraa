@@ -88,6 +88,11 @@ export const Navbar: React.FC = () => {
                 <img
                   src={logoImg}
                   alt="مقرأة بالقرآن نحيا"
+                  width={56}
+                  height={56}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                   className="relative w-full h-full object-contain drop-shadow-md"
                 />
               </motion.div>
