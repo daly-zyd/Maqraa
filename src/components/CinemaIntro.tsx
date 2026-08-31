@@ -178,7 +178,7 @@ export const CinemaIntro: React.FC = () => {
                     <span>نَحْيَا</span>
                   </h1>
                   <p className="text-[10px] sm:text-xs font-black text-gold-200/90 tracking-widest">
-                    مَقْرَأَةٌ قُرْآنِيَّةٌ تَعْلِيمِيَّةٌ مَجَّانِيَّةٌ 100%
+                  مقرأة قرآنية تعليمية مجانية 100%
                   </p>
                 </div>
 
