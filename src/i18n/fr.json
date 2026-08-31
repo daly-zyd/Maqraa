@@ -1,0 +1,101 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À Propos",
+    "programs": "Programmes",
+    "quran": "Coran",
+    "tazkiya": "Tazkiya",
+    "events": "Événements",
+    "contact": "Contact"
+  },
+  "sections": {
+    "all": "Tous",
+    "rijel": "Section Hommes (رجال)",
+    "nissa": "Section Femmes (نساء)",
+    "filter_title": "Section"
+  },
+  "home": {
+    "hero_title": "Vivre par le Coran",
+    "hero_subtitle": "Rejoignez la مقرأة \"نحيا\" pour l'apprentissage du Saint Coran, le tajwid, et le développement spirituel.",
+    "explore_rijel": "Espace Hommes",
+    "explore_nissa": "Espace Femmes",
+    "cta_join": "Rejoindre l'Institut",
+    "featured_programs": "Nos Programmes Phares",
+    "featured_programs_sub": "Découvrez nos parcours d'apprentissage adaptés à tous les niveaux.",
+    "upcoming_events": "Prochains Événements",
+    "upcoming_events_sub": "Ne manquez pas nos séminaires, conférences et activités communautaires."
+  },
+  "about": {
+    "title": "Qui sommes-nous ?",
+    "subtitle": "Présentation de la Maqraa, sa mission et ses valeurs.",
+    "mission": "Notre Mission",
+    "mission_desc": "Permettre à chacun de renouer avec le Livre d'Allah, d'en comprendre les enseignements et d'initier un véritable cheminement spirituel et personnel (Tazkiya).",
+    "vision": "Notre Vision",
+    "vision_desc": "Devenir un phare spirituel et éducatif, formant des générations imprégnées des valeurs coraniques et actives au sein de la société.",
+    "values": "Nos Valeurs",
+    "values_items": {
+      "excellence": "Excellence (Ihsan)",
+      "excellence_desc": "Dans la récitation, la transmission du savoir et le comportement.",
+      "brotherhood": "Fraternité & Sororité",
+      "brotherhood_desc": "Un cadre bienveillant favorisant l'entraide et le respect mutuel.",
+      "authenticity": "Authenticité & Modernité",
+      "authenticity_desc": "Des méthodes traditionnelles alliées à une pédagogie moderne."
+    }
+  },
+  "programs": {
+    "title": "Programmes Pédagogiques",
+    "subtitle": "Des parcours progressifs adaptés à votre rythme et niveau.",
+    "level": "Niveau",
+    "schedule": "Horaires",
+    "teacher": "Enseignant(e)",
+    "duration": "Durée",
+    "details": "Voir les détails",
+    "no_programs": "Aucun programme trouvé pour cette sélection.",
+    "register": "S'inscrire à ce programme",
+    "objectives": "Objectifs du programme",
+    "prerequisites": "Prérequis"
+  },
+  "quran": {
+    "title": "Espace Coranique",
+    "subtitle": "Ressources, règles de Tajwid et outils d'apprentissage.",
+    "rules": "Règles de Tajwid",
+    "rules_sub": "Fiches récapitulatives et explications des règles de récitation.",
+    "surah_list": "Sourates étudiées",
+    "audio_space": "Supports Audio & Vidéo",
+    "audio_space_sub": "Écoutez les récitations des enseignants et suivez les cours audio (bientôt disponible)."
+  },
+  "tazkiya": {
+    "title": "Tazkiya (Développement Spirituel)",
+    "subtitle": "Contenus et sagesses pour purifier l'âme et fortifier la foi.",
+    "articles": "Méditations & Articles",
+    "reflections": "Pensées du jour",
+    "read_more": "Lire la suite"
+  },
+  "events": {
+    "title": "Calendrier des Événements",
+    "subtitle": "Suivez la vie de notre communauté à travers nos rencontres.",
+    "date": "Date",
+    "time": "Heure",
+    "location": "Lieu",
+    "no_events": "Aucun événement prévu pour le moment."
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Une question ? Un projet d'inscription ? Écrivez-nous !",
+    "name": "Nom complet",
+    "email": "Adresse e-mail",
+    "subject": "Sujet",
+    "message": "Votre message",
+    "send": "Envoyer le message",
+    "info": "Informations utiles",
+    "address": "Adresse",
+    "hours": "Horaires d'ouverture",
+    "success_msg": "Votre message a été envoyé avec succès !",
+    "error_msg": "Une erreur est survenue lors de l'envoi du message."
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "desc": "Institut d'apprentissage du Coran et de développement spirituel.",
+    "quick_links": "Liens rapides"
+  }
+}

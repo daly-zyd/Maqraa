@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@300;400;500;600;700;800;900&family=El+Messiri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;900&display=swap');
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Islamic Emerald Colors */
+  --color-emerald-50: #f0fdf4;
+  --color-emerald-100: #dcfce7;
+  --color-emerald-200: #bbf7d0;
+  --color-emerald-300: #86efac;
+  --color-emerald-400: #4ade80;
+  --color-emerald-500: #0d5c46; /* Core Brand Emerald */
+  --color-emerald-600: #0a4937;
+  --color-emerald-700: #073729;
+  --color-emerald-800: #05261d;
+  --color-emerald-900: #031c15;
+  --color-emerald-950: #02120e;
+
+  /* Islamic Gold Colors */
+  --color-gold-50: #fefdf0;
+  --color-gold-100: #fcf9d9;
+  --color-gold-200: #f8f1a8;
+  --color-gold-300: #f3e46c;
+  --color-gold-400: #e7cf36;
+  --color-gold-500: #d4af37; /* Core Royal Gold */
+  --color-gold-600: #b28e23;
+  --color-gold-700: #8d6d1c;
+  --color-gold-800: #6a5019;
+  --color-gold-900: #4b3815;
+  --color-gold-950: #2c1f0a;
+
+  /* Neutrals Warm Stone */
+  --color-stone-50: #fafaf9;
+  --color-stone-100: #f5f5f4;
+  --color-stone-200: #e7e5e4;
+  --color-stone-300: #d6d3d1;
+  --color-stone-400: #a8a29e;
+  --color-stone-500: #78716c;
+  --color-stone-600: #57534e;
+  --color-stone-700: #44403c;
+  --color-stone-800: #292524;
+  --color-stone-900: #1c1917;
+  --color-stone-950: #0c0a09;
+
+  /* Fonts */
+  --font-amiri: "El Messiri", "Amiri", serif;
+  --font-quran: "Amiri", serif;
+  --font-messiri: "El Messiri", serif;
+  --font-alexandria: "Alexandria", sans-serif;
+  --font-tajawal: "Tajawal", sans-serif;
+  --font-cairo: "Cairo", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-tajawal), var(--font-cairo), var(--font-amiri), system-ui, sans-serif;
+    scroll-behavior: smooth;
+    direction: rtl;
+  }
+
+  html[dir="rtl"] {
+    font-family: var(--font-tajawal), var(--font-cairo), var(--font-amiri), system-ui, sans-serif;
+    direction: rtl;
+    text-align: right;
+  }
+
+  body {
+    background-color: #f6f1e8;
+    @apply text-stone-800 transition-colors duration-300 antialiased overflow-x-hidden;
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* Dark mode root & body */
+  html.dark body {
+    background-color: #021710;
+    @apply text-stone-100;
+  }
+
+  ::selection {
+    background-color: rgba(212, 175, 55, 0.35);
+    color: #031c15;
+  }
+
+  html.dark ::selection {
+    background-color: rgba(212, 175, 55, 0.4);
+    color: #fdfae7;
+  }
+}
+
+/* Islamic Geometric Pattern & Textures */
+.islamic-pattern {
+  background-image: 
+    radial-gradient(rgba(180, 140, 30, 0.22) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(13, 92, 70, 0.15) 1.5px, transparent 1.5px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+}
+
+.dark .islamic-pattern {
+  background-image: 
+    radial-gradient(rgba(212, 175, 55, 0.18) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(46, 204, 113, 0.12) 1.5px, transparent 1.5px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+}
+
+/* Authentic Islamic Arabesque (8-Pointed Star & Arabesque Geometry) */
+.islamic-arabesque-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3C!-- Outer Octagram --%3E%3Cpolygon points='48,6 60,18 78,18 78,36 90,48 78,60 78,78 60,78 48,90 36,78 18,78 18,60 6,48 18,36 18,18 36,18' stroke='%23c9a227' stroke-width='1.2' stroke-opacity='0.22'/%3E%3C!-- Inner Interlaced Star --%3E%3Cpolygon points='48,18 56,27 69,27 69,40 78,48 69,56 69,69 56,69 48,78 40,69 27,69 27,56 18,48 27,40 27,27 40,27' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.26'/%3E%3C!-- Diagonal Cross & Medallion --%3E%3Cpath d='M48 0 L48 96 M0 48 L96 48' stroke='%230d5c46' stroke-width='0.8' stroke-opacity='0.15'/%3E%3Cpath d='M0 0 L96 96 M0 96 L96 0' stroke='%230d5c46' stroke-width='0.8' stroke-opacity='0.12'/%3E%3Ccircle cx='48' cy='48' r='12' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.24'/%3E%3Ccircle cx='48' cy='48' r='4' fill='%23c9a227' fill-opacity='0.16'/%3E%3C!-- Corner Rosettes --%3E%3Ccircle cx='0' cy='0' r='10' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.2'/%3E%3Ccircle cx='96' cy='0' r='10' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.2'/%3E%3Ccircle cx='0' cy='96' r='10' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.2'/%3E%3Ccircle cx='96' cy='96' r='10' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.2'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 96px 96px;
+}
+
+.dark .islamic-arabesque-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='48,6 60,18 78,18 78,36 90,48 78,60 78,78 60,78 48,90 36,78 18,78 18,60 6,48 18,36 18,18 36,18' stroke='%23d4af37' stroke-width='1.2' stroke-opacity='0.14'/%3E%3Cpolygon points='48,18 56,27 69,27 69,40 78,48 69,56 69,69 56,69 48,78 40,69 27,69 27,56 18,48 27,40 27,27 40,27' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.18'/%3E%3Cpath d='M48 0 L48 96 M0 48 L96 48' stroke='%232ecc71' stroke-width='0.8' stroke-opacity='0.1'/%3E%3Cpath d='M0 0 L96 96 M0 96 L96 0' stroke='%232ecc71' stroke-width='0.8' stroke-opacity='0.08'/%3E%3Ccircle cx='48' cy='48' r='12' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.16'/%3E%3Ccircle cx='48' cy='48' r='4' fill='%23d4af37' fill-opacity='0.12'/%3E%3Ccircle cx='0' cy='0' r='10' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.14'/%3E%3Ccircle cx='96' cy='0' r='10' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.14'/%3E%3Ccircle cx='0' cy='96' r='10' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.14'/%3E%3Ccircle cx='96' cy='96' r='10' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.14'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 96px 96px;
+}
+
+/* Glassmorphism custom utilities */
+.glass {
+  background: rgba(253, 252, 249, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.dark .glass {
+  background: rgba(2, 24, 17, 0.85);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+.dark .glass-card {
+  background: rgba(3, 30, 22, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-stone-100 dark:bg-emerald-950;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gold-500/40 hover:bg-gold-500/70 rounded-full transition-colors duration-200;
+}
+
+/* Grid & decorative elements */
+.islamic-pattern {
+  background-image: radial-gradient(var(--color-gold-500) 0.85px, transparent 0.85px), 
+                    radial-gradient(var(--color-gold-500) 0.85px, transparent 0.85px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+/* Luxury Glow & Shadow Effects */
+.gold-glow {
+  box-shadow: 0 0 25px -3px rgba(212, 175, 55, 0.3);
+}
+
+.gold-glow-lg {
+  box-shadow: 0 0 45px -5px rgba(212, 175, 55, 0.45);
+}
+
+.emerald-glow {
+  box-shadow: 0 0 30px -5px rgba(13, 92, 70, 0.4);
+}
+
+/* Keyframe Animations */
+@keyframes gold-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-gold-shimmer {
+  background: linear-gradient(90deg, #d4af37 0%, #fdfae7 50%, #d4af37 100%);
+  background-size: 200% 100%;
+  animation: gold-shimmer 3.5s infinite linear;
+}
+
+@keyframes soft-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: soft-float 5s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.88;
+    transform: scale(1.02);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+/* Modern Islamic Display Headings */
+.font-amiri,
+.font-messiri {
+  font-family: 'El Messiri', 'Amiri', serif !important;
+}
+
+.font-alexandria {
+  font-family: 'Alexandria', sans-serif !important;
+}
+
+/* Quranic / Classical Arabic Calligraphy with full vocalization (Tashkeel) */
+.font-quran {
+  font-family: 'Amiri', serif !important;
+  line-height: 1.6 !important;
+  overflow: visible !important;
+}
+
