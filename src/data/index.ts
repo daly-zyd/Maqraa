@@ -272,9 +272,6 @@ export const getReflections = async (): Promise<Reflection[]> => {
   return delay(reflectionsData);
 };
 
-/* ============================================================
-   8. RESET TO DEFAULT
-   ============================================================ */
 export const resetToDefaults = async (): Promise<void> => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem(SETTINGS_KEY);
@@ -286,3 +283,16 @@ export const resetToDefaults = async (): Promise<void> => {
     notifyDataChanged();
   }
 };
+
+/* ============================================================
+   9. EMAIL & ADMIN AUTH SERVICE API
+   ============================================================ */
+export {
+  sendContactEmail,
+  sendAdminOtpEmail,
+  verifyAdminPassword,
+  getMaqraaEmail,
+  getSenderEmail
+} from './emailService';
+export type { ContactFormData, EmailResponse } from './emailService';
+

@@ -14,7 +14,11 @@ import {
   getPrograms,
   saveProgram,
   deleteProgram,
-  resetToDefaults
+  resetToDefaults,
+  sendAdminOtpEmail,
+  verifyAdminPassword,
+  getMaqraaEmail,
+  getSenderEmail
 } from '../data';
 import type {
   MaqraaSettings,
@@ -57,8 +61,8 @@ export const Admin: React.FC = () => {
   const [authError, setAuthError] = useState('');
   const [otpNotice, setOtpNotice] = useState('');
 
-  const adminExpectedPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'Maqraa.belquorannehya2026';
-  const maqraaEmail = import.meta.env.VITE_MAQRAA_EMAIL || 'maqraa.belquorannehya@gmail.com';
+  const maqraaEmail = getMaqraaEmail();
+  const senderEmail = getSenderEmail();
 
   const [activeTab, setActiveTab] = useState<
     'settings' | 'teachers' | 'supervisors' | 'tech' | 'programs'
@@ -117,19 +121,22 @@ export const Admin: React.FC = () => {
     }
   }, [otpTimer]);
 
-  const sendOtpCode = () => {
+  const sendOtpCode = async () => {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOtp(code);
     setOtpTimer(60);
     setLoginStep('otp');
     setAuthError('');
-    setOtpNotice(`تم إرسال رمز التحقق OTP بنجاح إلى: ${maqraaEmail}`);
+    
+    // Envoi effectif de l'email OTP
+    const res = await sendAdminOtpEmail(code);
+    setOtpNotice(res.message || `تم إرسال رمز التحقق OTP بنجاح إلى: ${maqraaEmail}`);
   };
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === adminExpectedPassword || passwordInput === '1234' || passwordInput === 'maqraa2026') {
-      sendOtpCode();
+    if (verifyAdminPassword(passwordInput)) {
+      await sendOtpCode();
     } else {
       setAuthError('رمز المرور الإداري غير صحيح.');
     }
@@ -232,10 +239,13 @@ export const Admin: React.FC = () => {
             /* STEP 2: OTP VERIFICATION */
             <form onSubmit={handleOtpSubmit} className="space-y-5">
               {otpNotice && (
-                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-500/30 text-emerald-800 dark:text-gold-300 text-xs text-center leading-relaxed">
-                  {otpNotice}
-                  <div className="mt-1 font-mono font-bold text-gold-600 dark:text-gold-400 text-sm">
-                    رمز الدخول السريع: {generatedOtp}
+                <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-500/30 text-emerald-900 dark:text-gold-200 text-xs text-center leading-relaxed space-y-1">
+                  <div>{otpNotice}</div>
+                  <div className="text-[11px] text-stone-500 dark:text-stone-300">
+                    من: <span className="font-mono text-gold-700 dark:text-gold-300">{senderEmail}</span> ➔ إلى: <span className="font-mono text-gold-700 dark:text-gold-300">{maqraaEmail}</span>
+                  </div>
+                  <div className="pt-1 font-mono font-bold text-gold-600 dark:text-gold-400 text-sm">
+                    رمز التحقق: {generatedOtp}
                   </div>
                 </div>
               )}

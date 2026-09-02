@@ -174,7 +174,7 @@ export const CinemaIntro: React.FC = () => {
                 {/* Main Vocalized Calligraphy: بِالقُرْآنِ نَحْيَا */}
                 <div className="space-y-1">
                   <h1 className="font-quran text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-b from-[#fff2b2] via-[#ffd700] to-[#c99700] bg-clip-text text-transparent drop-shadow-[0_4px_16px_rgba(212,175,55,0.6)] flex items-baseline justify-center gap-2 sm:gap-4" style={{ lineHeight: 2, transform: 'scaleY(1.2)', transformOrigin: 'center' }}>
-                    <span>بِالْقُرْ<span className="inline-block" style={{ width: '0.12em' }} />آنِ</span>
+                    <span>بِالقرآنِ</span>
                     <span>نَحْيَا</span>
                   </h1>
                   <p className="text-[10px] sm:text-xs font-black text-gold-200/90 tracking-widest">

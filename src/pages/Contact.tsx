@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone, Globe, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animations';
+import { sendContactEmail } from '../data';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -10,39 +11,38 @@ export const Contact: React.FC = () => {
     message: ''
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [feedbackMessage, setFeedbackMessage] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
       setStatus('error');
+      setFeedbackMessage('يرجى ملء جميع الحقول المطلوبة.');
       return;
     }
 
     setStatus('submitting');
     
-    // Direct dispatch / mailto fallback
-    const targetEmail = 'maqraa.belquorannehya@gmail.com';
-    const emailSubject = encodeURIComponent(formData.subject || `رسالة استفسار من ${formData.name}`);
-    const emailBody = encodeURIComponent(
-      `الاسم: ${formData.name}\nالبريد الإلكتروني: ${formData.email}\nالموضوع: ${formData.subject}\n\nنص الرسالة:\n${formData.message}`
-    );
+    const result = await sendContactEmail({
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message
+    });
 
-    setTimeout(() => {
+    if (result.success) {
       setStatus('success');
-      // Trigger user mail client fallback in background if needed
-      const mailtoLink = `mailto:${targetEmail}?subject=${emailSubject}&body=${emailBody}`;
-      try {
-        window.open(mailtoLink, '_blank');
-      } catch {
-        // Handled silently
-      }
+      setFeedbackMessage(result.message);
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 1200);
+    } else {
+      setStatus('error');
+      setFeedbackMessage(result.message);
+    }
   };
 
   const contactInfo = [
@@ -134,14 +134,14 @@ export const Contact: React.FC = () => {
             {status === 'success' && (
               <div className="mb-6 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/50 border border-emerald-500/40 text-emerald-800 dark:text-gold-300 flex items-center gap-3 text-sm shadow-inner">
                 <CheckCircle2 className="w-6 h-6 text-gold-500 flex-shrink-0" />
-                <span>تم إرسال رسالتكم بنجاح إلى إدارة المقرأة (maqraa.belquorannehya@gmail.com)! سنتواصل معكم في أقرب وقت.</span>
+                <span>{feedbackMessage || 'تم إرسال رسالتكم بنجاح إلى إدارة المقرأة (maqraa.belquorannehya@gmail.com)! سنتواصل معكم في أقرب وقت.'}</span>
               </div>
             )}
 
             {status === 'error' && (
               <div className="mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-500/30 text-red-800 dark:text-red-300 flex items-center gap-3 text-sm shadow-inner">
                 <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0" />
-                <span>يرجى ملء جميع الحقول المطلوبة (الاسم، البريد الإلكتروني، والرسالة) بشكل صحيح.</span>
+                <span>{feedbackMessage || 'يرجى ملء جميع الحقول المطلوبة (الاسم، البريد الإلكتروني، والرسالة) بشكل صحيح.'}</span>
               </div>
             )}
 

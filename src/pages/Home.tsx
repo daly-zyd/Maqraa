@@ -123,7 +123,7 @@ export const Home: React.FC = () => {
               className="font-quran text-4xl sm:text-6xl lg:text-7xl font-bold text-gold-300 drop-shadow-[0_4px_20px_rgba(201,162,39,0.55)] py-3 select-none flex items-baseline justify-center gap-3 sm:gap-5"
               style={{ lineHeight: 2.2, transform: 'scaleY(1.25)', transformOrigin: 'center' }}
             >
-              <span>بِالْقُرْ<span className="inline-block" style={{ width: '0.15em' }} />آنِ</span>
+              <span>بِالقرآنِ</span>
               <span>نَحْيَا</span>
             </h1>
           </FadeInUp>
