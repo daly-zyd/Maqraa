@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getPrograms, getSettings, getTeachers } from '../data';
 import type { Program, MaqraaSettings, Teacher } from '../data';
@@ -25,43 +25,23 @@ export const Home: React.FC = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadData = useCallback(async () => {
-    const [p, s, t] = await Promise.all([
-      getPrograms(),
-      getSettings(),
-      getTeachers()
-    ]);
-    setFeaturedPrograms(p.slice(0, 3));
-    setSettings(s);
-    setTeachers(t.slice(0, 3));
-    setLoading(false);
-  }, []);
-
   useEffect(() => {
     let mounted = true;
-    Promise.all([
-      getPrograms(),
-      getSettings(),
-      getTeachers()
-    ]).then(([p, s, t]) => {
-      if (mounted) {
-        setFeaturedPrograms(p.slice(0, 3));
-        setSettings(s);
-        setTeachers(t.slice(0, 3));
-        setLoading(false);
-      }
-    });
-
-    const handleUpdate = () => {
-      loadData();
+    const load = async () => {
+      const [p, s, t] = await Promise.all([getPrograms(), getSettings(), getTeachers()]);
+      if (!mounted) return;
+      setFeaturedPrograms(p.slice(0, 3));
+      setSettings(s);
+      setTeachers(t.slice(0, 3));
+      setLoading(false);
     };
-
-    window.addEventListener('maqraa_data_updated', handleUpdate);
+    load();
+    window.addEventListener('maqraa_data_updated', load);
     return () => {
       mounted = false;
-      window.removeEventListener('maqraa_data_updated', handleUpdate);
+      window.removeEventListener('maqraa_data_updated', load);
     };
-  }, [loadData]);
+  }, []);
 
   const stats = [
     { id: 1, name: 'طالب وطالبة ملتحقين', value: '+500', icon: Users },
