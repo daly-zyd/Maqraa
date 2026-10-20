@@ -1,0 +1,58 @@
+[tool.ruff]
+line-length = 125
+target-version = "py312"
+exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+
+[tool.importlinter]
+root_packages = ["apps", "integrations", "config"]
+include_external_packages = false
+
+# ---- Layering inside every app: views -> services -> repositories -> models -------------
+[[tool.importlinter.contracts]]
+name = "Layers inside each app (views > services > repositories > models)"
+type = "layers"
+layers = ["(views)", "(services)", "(repositories)", "(models)"]
+containers = [
+  "apps.core", "apps.audit", "apps.accounts", "apps.access", "apps.maqraat",
+  "apps.people", "apps.configuration", "apps.scheduling",
+]
+exhaustive = false
+
+# views may only reach services (never repositories / models)
+[[tool.importlinter.contracts]]
+name = "Controllers (views) never import repositories or models"
+type = "forbidden"
+allow_indirect_imports = true
+source_modules = [
+  "apps.accounts.views", "apps.maqraat.views", "apps.people.views",
+  "apps.configuration.views", "apps.scheduling.views",
+]
+forbidden_modules = [
+  "apps.accounts.repositories", "apps.accounts.models",
+  "apps.maqraat.repositories", "apps.maqraat.models",
+  "apps.people.repositories", "apps.people.models",
+  "apps.configuration.repositories", "apps.configuration.models",
+  "apps.scheduling.repositories", "apps.scheduling.models",
+]
+
+# Apps talk to each other only through the other app's services; the app graph is acyclic.
+[[tool.importlinter.contracts]]
+name = "Acyclic app graph (lower apps never import higher apps)"
+type = "layers"
+layers = [
+  "apps.scheduling", "apps.configuration", "apps.people", "apps.maqraat",
+  "apps.access", "apps.accounts", "apps.audit", "apps.core",
+]
+
+[[tool.importlinter.contracts]]
+name = "Integrations are adapters: they never import apps"
+type = "forbidden"
+allow_indirect_imports = true
+source_modules = ["integrations"]
+forbidden_modules = ["apps"]

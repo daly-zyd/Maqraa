@@ -1,0 +1,13 @@
+Django>=5.1,<5.3
+djangorestframework>=3.15
+djangorestframework-simplejwt>=5.3
+drf-spectacular>=0.27
+django-cors-headers>=4.4
+phonenumbers>=8.13
+argon2-cffi>=23.1
+openpyxl>=3.1
+hijridate>=2.5
+mssql-django>=1.5        # SQL Server (prod/dev); not needed for the sandbox test settings
+pyodbc>=5.1
+python-dotenv>=1.0
+waitress>=3.0
