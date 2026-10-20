@@ -16,7 +16,8 @@ import {
   ChevronLeft,
   HeartHandshake
 } from 'lucide-react';
-import { FadeInUp, StaggerContainer, StaggerItem, FloatAnimation, GlowPulse } from '../components/Animations';
+import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animations';
+import { StarMark } from '../components/StarMark';
 import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
 
 export const Home: React.FC = () => {
@@ -59,89 +60,74 @@ export const Home: React.FC = () => {
   return (
     <div className="relative overflow-hidden min-h-screen text-right">
       
-      {/* 1. Hero Section */}
-      <section className="relative pt-8 pb-12 sm:pt-12 sm:pb-16 flex flex-col items-center justify-center text-center overflow-hidden bg-gradient-to-b from-emerald-950 via-emerald-900 to-stone-50 dark:to-emerald-950 text-white border-b border-gold-500/30">
-        {/* Decorative Islamic Background Pattern */}
-        <div className="absolute inset-0 islamic-pattern opacity-[0.08] pointer-events-none" />
-        
-        {/* Multilayer Glow Effects */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] bg-gold-500/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-6 end-6 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-6 start-6 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
+      {/* 1. Hero */}
+      <section className="relative bg-emerald-950 text-white border-b border-gold-500/50 overflow-hidden">
+        <div aria-hidden className="absolute inset-0 islamic-arabesque-bg opacity-80" />
+        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_28%_45%,rgba(191,149,52,0.22),transparent_55%)]" />
 
-        <div className="max-w-5xl mx-auto px-4 relative z-10 flex flex-col items-center gap-3.5 sm:gap-4">
-          
-          {/* Official Logo — Hero centrepiece */}
-          <FadeInUp className="relative group">
-            <FloatAnimation>
-              <GlowPulse color="rgba(201,162,39,0.45)">
-                <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 flex items-center justify-center transition-transform duration-500 hover:scale-105">
-                  {/* outer ambient ring */}
-                  <div className="absolute inset-0 rounded-full bg-[#c9a227]/15 blur-2xl scale-125 pointer-events-none animate-pulse" />
-                  <img
-                    src={logoImg}
-                    alt="مقرأة بالقرآن نحيا"
-                    className="relative w-full h-full object-contain"
-                    style={{ filter: 'drop-shadow(0 0 24px rgba(201,162,39,0.5)) drop-shadow(0 4px 16px rgba(0,0,0,0.5))' }}
-                  />
-                </div>
-              </GlowPulse>
-            </FloatAnimation>
-          </FadeInUp>
-
-          {/* Prominent FREE Badge */}
-          <FadeInUp delay={0.1}>
-            <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 rounded-full bg-gradient-to-l from-gold-500/20 via-emerald-800/80 to-gold-500/20 backdrop-blur-md border border-gold-500/50 text-gold-300 text-xs sm:text-sm font-black shadow-lg animate-pulse">
-              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-              <span>مقرأة قرآنية تعليمية مجانية 100% • عن بُعد لجميع أنحاء العالم</span>
-            </div>
-          </FadeInUp>
-
-          {/* Big Calligraphic Title — Fully Vocalized with spaced Tashkeel */}
-          <FadeInUp delay={0.15}>
-            <h1 
-              className="font-quran text-4xl sm:text-6xl lg:text-7xl font-bold text-gold-300 drop-shadow-[0_4px_20px_rgba(201,162,39,0.55)] py-3 select-none flex items-baseline justify-center gap-3 sm:gap-5"
-              style={{ lineHeight: 2.2, transform: 'scaleY(1.25)', transformOrigin: 'center' }}
-            >
-              <span>بِالقرآنِ</span>
-              <span>نَحْيَا</span>
-            </h1>
-          </FadeInUp>
-
-          {/* Founder Sub-Badge */}
-          <FadeInUp delay={0.2}>
-            <div className="inline-flex items-center gap-2 text-stone-200 text-xs sm:text-sm font-medium">
-              <span>تحت إشراف</span>
-              <strong className="text-gold-300 font-bold border-b border-gold-400/40 pb-0.5">{founderName}</strong>
-              <span className="text-stone-300">({founderTitle})</span>
-            </div>
-          </FadeInUp>
-
-          {/* Subtitle & Value Proposition */}
-          <FadeInUp delay={0.25}>
-            <p className="text-sm sm:text-base lg:text-lg text-stone-200 max-w-2xl leading-relaxed font-light drop-shadow-sm">
-              تعلم القرآن الكريم وحفظه وتجويده وتدبر معانيه عن بُعد مع نخبة من المشايخ والأساتذة المجازين بالسند المتصل، في حلقات مخصصة ومستقلة للرجال والنساء.
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[1.15fr_0.85fr] items-center gap-10 lg:gap-6">
+          {/* Words */}
+          <div className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-start gap-6">
+            <p className="flex items-center gap-3 text-sm sm:text-base font-semibold text-gold-300">
+              <span>عن بُعد</span>
+              <StarMark className="w-3.5 h-3.5" />
+              <span>مجانية 100%</span>
+              <StarMark className="w-3.5 h-3.5" />
+              <span>للرجال والنساء</span>
             </p>
-          </FadeInUp>
 
-          {/* Call to Actions */}
-          <FadeInUp delay={0.3} className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-1 w-full sm:w-auto">
-            <a
-              href="#online-learning"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-center text-xs sm:text-sm text-emerald-950 bg-gradient-to-l from-gold-500 via-gold-400 to-gold-300 hover:from-gold-400 hover:to-gold-200 shadow-xl hover:shadow-gold-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <MessageCircle className="w-4 h-4 text-emerald-950" />
-              <span>انضم إلى المقرأة مجاناً</span>
-            </a>
-            <Link
-              to="/programs"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-center text-xs sm:text-sm text-white border-2 border-gold-400/80 hover:border-gold-300 hover:text-gold-200 hover:bg-gold-500/10 transition-all duration-300 backdrop-blur-md flex items-center justify-center gap-2"
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>اكتشف برامجنا التعليمية</span>
-            </Link>
-          </FadeInUp>
+            <h1 className="font-thuluth text-gilded text-6xl sm:text-7xl xl:text-8xl leading-[1.5] select-none">
+              بالقرآن نحيا
+            </h1>
 
+            <p className="max-w-xl text-lg sm:text-xl leading-9 text-stone-200">
+              تعلّم القرآن الكريم وحفظه وتجويده وتدبّر معانيه مع نخبة من المشايخ والأساتذة المجازين بالسند المتصل،
+              في حلقات مستقلة للرجال والنساء.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mt-2">
+              <a
+                href="#online-learning"
+                className="inline-flex items-center justify-center gap-2.5 px-9 py-3.5 rounded-full font-bold text-emerald-950 bg-gradient-to-b from-gold-300 to-gold-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_10px_24px_-8px_rgba(0,0,0,0.6)] hover:from-gold-200 hover:to-gold-400 transition-colors"
+              >
+                <MessageCircle className="w-5 h-5" aria-hidden />
+                انضم إلى المقرأة مجاناً
+              </a>
+              <Link
+                to="/programs"
+                className="inline-flex items-center justify-center gap-2.5 px-9 py-3.5 rounded-full font-bold text-gold-200 border border-gold-400/70 hover:bg-gold-400/10 transition-colors"
+              >
+                <BookOpen className="w-5 h-5" aria-hidden />
+                البرامج التعليمية
+              </Link>
+            </div>
+
+            <p className="text-[15px] text-stone-300 mt-1">
+              تحت إشراف <strong className="text-gold-300 font-bold">{founderName}</strong>
+            </p>
+          </div>
+
+          {/* Emblem: the logo sits inside a star ring that draws itself once on load */}
+          <div className="order-1 lg:order-2 relative mx-auto w-[min(80vw,440px)] lg:w-full max-w-[520px] aspect-square">
+            <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full text-gold-400" aria-hidden fill="none" stroke="currentColor">
+              <g className="turn-slow origin-center" strokeWidth="1">
+                <circle cx="200" cy="200" r="196" strokeOpacity="0.35" strokeDasharray="2 7" />
+              </g>
+              <g strokeWidth="1.6" strokeOpacity="0.75">
+                <rect pathLength={1} className="ring-draw" x="70" y="70" width="260" height="260" />
+                <rect pathLength={1} className="ring-draw" x="70" y="70" width="260" height="260" transform="rotate(45 200 200)" />
+              </g>
+              <circle cx="200" cy="200" r="168" strokeOpacity="0.3" />
+            </svg>
+            <img
+              src={logoImg}
+              alt="شعار مقرأة بالقرآن نحيا"
+              width={420}
+              height={420}
+              fetchPriority="high"
+              className="absolute inset-[9%] w-[82%] h-[82%] object-contain drop-shadow-[0_18px_30px_rgba(0,0,0,0.55)]"
+            />
+          </div>
         </div>
       </section>
 

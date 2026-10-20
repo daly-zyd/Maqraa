@@ -1,244 +1,222 @@
-@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@300;400;500;600;700;800;900&family=El+Messiri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;900&display=swap');
-
+@import "@fontsource-variable/noto-naskh-arabic";
+@import "@fontsource-variable/cormorant-garamond";
+@import "@fontsource/amiri-quran";
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Thuluth display face — logo lettering, hero title and section marks only */
+@font-face {
+  font-family: "Decotype Thuluth";
+  src: url("/fonts/DecotypeThuluthIII.woff2") format("woff2");
+  font-display: swap;
+}
+
+/*
+ * Palette is lifted from the three Bel Quran Nahya logos:
+ *   emerald  = mushaf cover of the green logo
+ *   gold     = antique gilding on every rim and the title cartouche
+ *   oxblood  = velvet of the Hafs men logo
+ *   lapis    = ink of the cover calligraphy
+ *   stone    = parchment of the page behind the logos (warm, never grey)
+ */
 @theme {
-  /* Islamic Emerald Colors */
-  --color-emerald-50: #f0fdf4;
-  --color-emerald-100: #dcfce7;
-  --color-emerald-200: #bbf7d0;
-  --color-emerald-300: #86efac;
-  --color-emerald-400: #4ade80;
-  --color-emerald-500: #0d5c46; /* Core Brand Emerald */
-  --color-emerald-600: #0a4937;
-  --color-emerald-700: #073729;
-  --color-emerald-800: #05261d;
-  --color-emerald-900: #031c15;
-  --color-emerald-950: #02120e;
+  --color-emerald-50: #eff6f2;
+  --color-emerald-100: #d8e9df;
+  --color-emerald-200: #b1d3c1;
+  --color-emerald-300: #7fb59b;
+  --color-emerald-400: #4b9275;
+  --color-emerald-500: #1c6b52;
+  --color-emerald-600: #14553f;
+  --color-emerald-700: #0f4332;
+  --color-emerald-800: #0a3226;
+  --color-emerald-900: #07241b;
+  --color-emerald-950: #041812;
 
-  /* Islamic Gold Colors */
-  --color-gold-50: #fefdf0;
-  --color-gold-100: #fcf9d9;
-  --color-gold-200: #f8f1a8;
-  --color-gold-300: #f3e46c;
-  --color-gold-400: #e7cf36;
-  --color-gold-500: #d4af37; /* Core Royal Gold */
-  --color-gold-600: #b28e23;
-  --color-gold-700: #8d6d1c;
-  --color-gold-800: #6a5019;
-  --color-gold-900: #4b3815;
-  --color-gold-950: #2c1f0a;
+  --color-gold-50: #fbf7ec;
+  --color-gold-100: #f5ecd0;
+  --color-gold-200: #ecdaa1;
+  --color-gold-300: #e3c777;
+  --color-gold-400: #d3b055;
+  --color-gold-500: #bf9534;
+  --color-gold-600: #9c7623;
+  --color-gold-700: #7a5b1b;
+  --color-gold-800: #5c4416;
+  --color-gold-900: #3f2f10;
+  --color-gold-950: #261c08;
 
-  /* Neutrals Warm Stone */
-  --color-stone-50: #fafaf9;
-  --color-stone-100: #f5f5f4;
-  --color-stone-200: #e7e5e4;
-  --color-stone-300: #d6d3d1;
-  --color-stone-400: #a8a29e;
-  --color-stone-500: #78716c;
-  --color-stone-600: #57534e;
-  --color-stone-700: #44403c;
-  --color-stone-800: #292524;
-  --color-stone-900: #1c1917;
-  --color-stone-950: #0c0a09;
+  --color-oxblood-50: #fbf1f2;
+  --color-oxblood-200: #ecc3c9;
+  --color-oxblood-400: #b44a5c;
+  --color-oxblood-500: #7a1c2e;
+  --color-oxblood-600: #62162a;
+  --color-oxblood-700: #4c1022;
+  --color-oxblood-800: #380c1a;
 
-  /* Fonts */
-  --font-amiri: "El Messiri", "Amiri", serif;
-  --font-quran: "Amiri", serif;
-  --font-messiri: "El Messiri", serif;
-  --font-alexandria: "Alexandria", sans-serif;
-  --font-tajawal: "Tajawal", sans-serif;
-  --font-cairo: "Cairo", sans-serif;
-  --font-inter: "Inter", sans-serif;
+  --color-lapis-400: #5877b8;
+  --color-lapis-500: #2c4c8f;
+  --color-lapis-700: #1b3066;
+
+  --color-stone-50: #faf6ee;
+  --color-stone-100: #f3ecdd;
+  --color-stone-200: #e6dcc6;
+  --color-stone-300: #d3c6a8;
+  --color-stone-400: #a39a85;
+  --color-stone-500: #7d7563;
+  --color-stone-600: #5b5445;
+  --color-stone-700: #453f33;
+  --color-stone-800: #2e2a22;
+  --color-stone-900: #1d1a15;
+  --color-stone-950: #0e0d0a;
+
+  --color-paper: #f4ecda;
+  --color-paper-deep: #ebe0c8;
+  --color-night: #04140e;
+
+  /* One text family for Arabic and Latin, a calligraphic display face, a Quran face for verses */
+  --font-sans: "Noto Naskh Arabic Variable", "Cormorant Garamond Variable", system-ui, serif;
+  --font-display: "Cormorant Garamond Variable", "Noto Naskh Arabic Variable", serif;
+  --font-thuluth: "Decotype Thuluth", "Noto Naskh Arabic Variable", serif;
+  --font-quran: "Amiri Quran", "Noto Naskh Arabic Variable", serif;
+  /* legacy aliases: existing pages still use these class names */
+  --font-amiri: "Cormorant Garamond Variable", "Noto Naskh Arabic Variable", serif;
+  --font-messiri: "Cormorant Garamond Variable", "Noto Naskh Arabic Variable", serif;
+  --font-alexandria: "Noto Naskh Arabic Variable", sans-serif;
+  --font-tajawal: "Noto Naskh Arabic Variable", sans-serif;
+  --font-cairo: "Noto Naskh Arabic Variable", sans-serif;
+  --font-inter: "Noto Naskh Arabic Variable", sans-serif;
 }
 
 @layer base {
   html {
-    font-family: var(--font-tajawal), var(--font-cairo), var(--font-amiri), system-ui, sans-serif;
+    font-family: var(--font-sans);
     scroll-behavior: smooth;
-    direction: rtl;
-  }
-
-  html[dir="rtl"] {
-    font-family: var(--font-tajawal), var(--font-cairo), var(--font-amiri), system-ui, sans-serif;
-    direction: rtl;
-    text-align: right;
   }
 
   body {
-    background-color: #f6f1e8;
-    @apply text-stone-800 transition-colors duration-300 antialiased overflow-x-hidden;
-    direction: rtl;
-    text-align: right;
+    background-color: var(--color-paper);
+    @apply text-stone-800 antialiased overflow-x-hidden;
+    line-height: 1.85;
+    transition: background-color 0.3s;
   }
 
-  /* Dark mode root & body */
   html.dark body {
-    background-color: #021710;
+    background-color: var(--color-night);
     @apply text-stone-100;
   }
 
+  h1, h2, h3, h4, .font-amiri {
+    line-height: 1.35;
+    font-variant-numeric: lining-nums;
+  }
+
   ::selection {
-    background-color: rgba(212, 175, 55, 0.35);
-    color: #031c15;
+    background-color: rgba(191, 149, 52, 0.35);
+    color: var(--color-emerald-950);
   }
 
-  html.dark ::selection {
-    background-color: rgba(212, 175, 55, 0.4);
-    color: #fdfae7;
+  :focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
   }
 }
 
-/* Islamic Geometric Pattern & Textures */
+/* Verse text: always the Quran face, generous leading so tashkeel never clips */
+.font-quran {
+  font-family: var(--font-quran);
+  line-height: 2.2;
+  overflow: visible;
+}
+
+.font-thuluth {
+  font-family: var(--font-thuluth);
+  line-height: 1.6;
+}
+
+/* Dot lattice (kept: used by several pages) */
 .islamic-pattern {
-  background-image: 
-    radial-gradient(rgba(180, 140, 30, 0.22) 1.5px, transparent 1.5px),
-    radial-gradient(rgba(13, 92, 70, 0.15) 1.5px, transparent 1.5px);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
-}
-
-.dark .islamic-pattern {
-  background-image: 
-    radial-gradient(rgba(212, 175, 55, 0.18) 1.5px, transparent 1.5px),
-    radial-gradient(rgba(46, 204, 113, 0.12) 1.5px, transparent 1.5px);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
-}
-
-/* Authentic Islamic Arabesque (8-Pointed Star & Arabesque Geometry) */
-.islamic-arabesque-bg {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3C!-- Outer Octagram --%3E%3Cpolygon points='48,6 60,18 78,18 78,36 90,48 78,60 78,78 60,78 48,90 36,78 18,78 18,60 6,48 18,36 18,18 36,18' stroke='%23c9a227' stroke-width='1.2' stroke-opacity='0.22'/%3E%3C!-- Inner Interlaced Star --%3E%3Cpolygon points='48,18 56,27 69,27 69,40 78,48 69,56 69,69 56,69 48,78 40,69 27,69 27,56 18,48 27,40 27,27 40,27' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.26'/%3E%3C!-- Diagonal Cross & Medallion --%3E%3Cpath d='M48 0 L48 96 M0 48 L96 48' stroke='%230d5c46' stroke-width='0.8' stroke-opacity='0.15'/%3E%3Cpath d='M0 0 L96 96 M0 96 L96 0' stroke='%230d5c46' stroke-width='0.8' stroke-opacity='0.12'/%3E%3Ccircle cx='48' cy='48' r='12' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.24'/%3E%3Ccircle cx='48' cy='48' r='4' fill='%23c9a227' fill-opacity='0.16'/%3E%3C!-- Corner Rosettes --%3E%3Ccircle cx='0' cy='0' r='10' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.2'/%3E%3Ccircle cx='96' cy='0' r='10' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.2'/%3E%3Ccircle cx='0' cy='96' r='10' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.2'/%3E%3Ccircle cx='96' cy='96' r='10' stroke='%23c9a227' stroke-width='1' stroke-opacity='0.2'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 96px 96px;
-}
-
-.dark .islamic-arabesque-bg {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='48,6 60,18 78,18 78,36 90,48 78,60 78,78 60,78 48,90 36,78 18,78 18,60 6,48 18,36 18,18 36,18' stroke='%23d4af37' stroke-width='1.2' stroke-opacity='0.14'/%3E%3Cpolygon points='48,18 56,27 69,27 69,40 78,48 69,56 69,69 56,69 48,78 40,69 27,69 27,56 18,48 27,40 27,27 40,27' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.18'/%3E%3Cpath d='M48 0 L48 96 M0 48 L96 48' stroke='%232ecc71' stroke-width='0.8' stroke-opacity='0.1'/%3E%3Cpath d='M0 0 L96 96 M0 96 L96 0' stroke='%232ecc71' stroke-width='0.8' stroke-opacity='0.08'/%3E%3Ccircle cx='48' cy='48' r='12' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.16'/%3E%3Ccircle cx='48' cy='48' r='4' fill='%23d4af37' fill-opacity='0.12'/%3E%3Ccircle cx='0' cy='0' r='10' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.14'/%3E%3Ccircle cx='96' cy='0' r='10' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.14'/%3E%3Ccircle cx='0' cy='96' r='10' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.14'/%3E%3Ccircle cx='96' cy='96' r='10' stroke='%23d4af37' stroke-width='1' stroke-opacity='0.14'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 96px 96px;
-}
-
-/* Glassmorphism custom utilities */
-.glass {
-  background: rgba(253, 252, 249, 0.88);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-}
-
-.dark .glass {
-  background: rgba(2, 24, 17, 0.85);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(212, 175, 55, 0.22);
-}
-
-.dark .glass-card {
-  background: rgba(3, 30, 22, 0.65);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(212, 175, 55, 0.18);
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-::-webkit-scrollbar-track {
-  @apply bg-stone-100 dark:bg-emerald-950;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-gold-500/40 hover:bg-gold-500/70 rounded-full transition-colors duration-200;
-}
-
-/* Grid & decorative elements */
-.islamic-pattern {
-  background-image: radial-gradient(var(--color-gold-500) 0.85px, transparent 0.85px), 
-                    radial-gradient(var(--color-gold-500) 0.85px, transparent 0.85px);
+  background-image:
+    radial-gradient(rgba(191, 149, 52, 0.28) 1.2px, transparent 1.2px),
+    radial-gradient(rgba(20, 85, 63, 0.2) 1.2px, transparent 1.2px);
   background-size: 28px 28px;
   background-position: 0 0, 14px 14px;
 }
 
-/* Luxury Glow & Shadow Effects */
-.gold-glow {
-  box-shadow: 0 0 25px -3px rgba(212, 175, 55, 0.3);
+/* Eight-point star lattice (khatam) — page ground */
+.islamic-arabesque-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%239c7623' stroke-width='.8' stroke-opacity='.16'%3E%3Cpath d='M36 6 46 26 66 36 46 46 36 66 26 46 6 36 26 26Z'/%3E%3Cpath d='M18 18l9 9M54 18l-9 9M18 54l9-9M54 54l-9-9'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 72px 72px;
+}
+.dark .islamic-arabesque-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23d3b055' stroke-width='.8' stroke-opacity='.1'%3E%3Cpath d='M36 6 46 26 66 36 46 46 36 66 26 46 6 36 26 26Z'/%3E%3Cpath d='M18 18l9 9M54 18l-9 9M18 54l9-9M54 54l-9-9'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-.gold-glow-lg {
-  box-shadow: 0 0 45px -5px rgba(212, 175, 55, 0.45);
+/* Mushaf page margin: double gold rule, drawn once, fixed to the viewport */
+.mushaf-frame {
+  border: 1px solid rgba(156, 118, 35, 0.4);
+  outline: 1px solid rgba(156, 118, 35, 0.22);
+  outline-offset: 5px;
+}
+.dark .mushaf-frame {
+  border-color: rgba(211, 176, 85, 0.3);
+  outline-color: rgba(211, 176, 85, 0.16);
 }
 
-.emerald-glow {
-  box-shadow: 0 0 30px -5px rgba(13, 92, 70, 0.4);
+/* Gold leaf text */
+.text-gilded {
+  background-image: linear-gradient(180deg, var(--color-gold-200) 0%, var(--color-gold-400) 55%, var(--color-gold-600) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-/* Keyframe Animations */
-@keyframes gold-shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+/* Mihrab arch: clip for the hero emblem window */
+.mihrab {
+  clip-path: path("M0 360 V150 C0 60 80 0 160 0 S320 60 320 150 V360 Z");
 }
 
+@keyframes ring-draw {
+  from { stroke-dashoffset: 1; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+.ring-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ring-draw 2.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+@keyframes turn {
+  to { transform: rotate(360deg); }
+}
+.turn-slow { animation: turn 160s linear infinite; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--color-stone-100); }
+.dark ::-webkit-scrollbar-track { background: var(--color-emerald-950); }
+::-webkit-scrollbar-thumb { background: rgba(156, 118, 35, 0.45); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(156, 118, 35, 0.7); }
+
+.gold-glow { box-shadow: 0 0 25px -3px rgba(191, 149, 52, 0.3); }
+.gold-glow-lg { box-shadow: 0 0 45px -5px rgba(191, 149, 52, 0.45); }
+.emerald-glow { box-shadow: 0 0 30px -5px rgba(20, 85, 63, 0.4); }
+
+@keyframes gold-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 .animate-gold-shimmer {
-  background: linear-gradient(90deg, #d4af37 0%, #fdfae7 50%, #d4af37 100%);
+  background: linear-gradient(90deg, #bf9534 0%, #fbf7ec 50%, #bf9534 100%);
   background-size: 200% 100%;
   animation: gold-shimmer 3.5s infinite linear;
 }
-
-@keyframes soft-float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-.animate-float {
-  animation: soft-float 5s ease-in-out infinite;
-}
-
-@keyframes pulse-subtle {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.88;
-    transform: scale(1.02);
-  }
-}
-
-.animate-pulse-subtle {
-  animation: pulse-subtle 3s ease-in-out infinite;
-}
-
-/* Modern Islamic Display Headings */
-.font-amiri,
-.font-messiri {
-  font-family: 'El Messiri', 'Amiri', serif !important;
-}
-
-.font-alexandria {
-  font-family: 'Alexandria', sans-serif !important;
-}
-
-/* Quranic / Classical Arabic Calligraphy with full vocalization (Tashkeel) */
-.font-quran {
-  font-family: 'Amiri', serif !important;
-  line-height: 1.6 !important;
-  overflow: visible !important;
-}
-
+@keyframes soft-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.animate-float { animation: soft-float 5s ease-in-out infinite; }
+@keyframes pulse-subtle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.88; transform: scale(1.02); } }
+.animate-pulse-subtle { animation: pulse-subtle 3s ease-in-out infinite; }

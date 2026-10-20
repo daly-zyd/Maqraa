@@ -1,0 +1,10 @@
+const { chromium } = require('playwright');
+const [,, url, out, w='1440', h='900', dark='0', full='0'] = process.argv;
+(async()=>{const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const p = await b.newPage({ viewport: { width: +w, height: +h } });
+await p.addInitScript((d) => { try { sessionStorage.setItem('intro_seen','1'); localStorage.setItem('theme', d==='1'?'dark':'light'); } catch {} }, dark);
+await p.goto(url, { waitUntil: 'networkidle' });
+await p.waitForTimeout(9000);
+await p.screenshot({ path: out, fullPage: full === '1' });
+await b.close();
+})();
