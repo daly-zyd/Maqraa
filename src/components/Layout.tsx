@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { ScrollToTopButton } from './ScrollToTopButton';
+import { PageTransition } from './PageTransition';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => (
 
     <Navbar />
 
-    <main className="flex-grow relative z-10">{children}</main>
+    <main className="flex-grow relative z-10"><PageTransition>{children}</PageTransition></main>
 
     <Footer />
     <ScrollToTopButton />

@@ -46,16 +46,28 @@
   --color-gold-950: #261c08;
 
   --color-oxblood-50: #fbf1f2;
-  --color-oxblood-200: #ecc3c9;
-  --color-oxblood-400: #b44a5c;
-  --color-oxblood-500: #7a1c2e;
-  --color-oxblood-600: #62162a;
-  --color-oxblood-700: #4c1022;
-  --color-oxblood-800: #380c1a;
+  --color-oxblood-100: #f4dadd;
+  --color-oxblood-200: #e8b5bc;
+  --color-oxblood-300: #d68793;
+  --color-oxblood-400: #bf5568;
+  --color-oxblood-500: #8f2438;
+  --color-oxblood-600: #741a2d;
+  --color-oxblood-700: #5c1424;
+  --color-oxblood-800: #440e1a;
+  --color-oxblood-900: #2f0911;
+  --color-oxblood-950: #1c050a;
 
-  --color-lapis-400: #5877b8;
-  --color-lapis-500: #2c4c8f;
-  --color-lapis-700: #1b3066;
+  --color-lapis-50: #eff3fa;
+  --color-lapis-100: #d9e2f3;
+  --color-lapis-200: #b5c6e6;
+  --color-lapis-300: #86a0d2;
+  --color-lapis-400: #5878bb;
+  --color-lapis-500: #34569c;
+  --color-lapis-600: #274483;
+  --color-lapis-700: #1d3469;
+  --color-lapis-800: #142550;
+  --color-lapis-900: #0d1a39;
+  --color-lapis-950: #080f24;
 
   --color-stone-50: #faf6ee;
   --color-stone-100: #f3ecdd;
@@ -85,6 +97,34 @@
   --font-tajawal: "Noto Naskh Arabic Variable", sans-serif;
   --font-cairo: "Noto Naskh Arabic Variable", sans-serif;
   --font-inter: "Noto Naskh Arabic Variable", sans-serif;
+}
+
+/*
+ * Maqraa themes. Every legacy "emerald-*" utility reads the --color-emerald-* variables,
+ * so re-pointing the scale re-skins the whole site (the name is historical: it means "brand deep colour").
+ * Set with <html data-maqraa="…">; the default theme sets nothing.
+ */
+@layer base {
+  :root[data-maqraa="hafs-men"] {
+    --color-emerald-50: var(--color-oxblood-50);   --color-emerald-100: var(--color-oxblood-100);
+    --color-emerald-200: var(--color-oxblood-200); --color-emerald-300: var(--color-oxblood-300);
+    --color-emerald-400: var(--color-oxblood-400); --color-emerald-500: var(--color-oxblood-500);
+    --color-emerald-600: var(--color-oxblood-600); --color-emerald-700: var(--color-oxblood-700);
+    --color-emerald-800: var(--color-oxblood-800); --color-emerald-900: var(--color-oxblood-900);
+    --color-emerald-950: var(--color-oxblood-950); --color-night: #14060a;
+  }
+  :root[data-maqraa="women"] {
+    --color-emerald-50: var(--color-lapis-50);   --color-emerald-100: var(--color-lapis-100);
+    --color-emerald-200: var(--color-lapis-200); --color-emerald-300: var(--color-lapis-300);
+    --color-emerald-400: var(--color-lapis-400); --color-emerald-500: var(--color-lapis-500);
+    --color-emerald-600: var(--color-lapis-600); --color-emerald-700: var(--color-lapis-700);
+    --color-emerald-800: var(--color-lapis-800); --color-emerald-900: var(--color-lapis-900);
+    --color-emerald-950: var(--color-lapis-950); --color-night: #060b1c;
+  }
+  :root[data-maqraa="men"] {
+    --color-emerald-500: #1b6a3f; --color-emerald-600: #14562f; --color-emerald-700: #0e4224;
+    --color-emerald-800: #0a321b; --color-emerald-900: #072414; --color-emerald-950: #04170d;
+  }
 }
 
 @layer base {
@@ -199,6 +239,17 @@
   to { transform: rotate(360deg); }
 }
 .turn-slow { animation: turn 160s linear infinite; }
+
+/* Hero ground: khatam lattice drifting very slowly, plus a breathing glow */
+@keyframes drift {
+  to { background-position: 144px 72px; }
+}
+.drift-slow { animation: drift 90s linear infinite; }
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+.glow-breathe { animation: glow-breathe 7s ease-in-out infinite; }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--color-stone-100); }

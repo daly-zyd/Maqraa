@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Sun, Moon, Lock } from 'lucide-react';
+import { Menu, X, Lock } from 'lucide-react';
+import { ThemeSelector } from '../features/theme/ThemeSelector';
 import { StarMark } from './StarMark';
 import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
 
@@ -18,16 +19,8 @@ const iconButton =
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDark, setIsDark] = useState(
-    () => document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark'
-  );
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  }, [isDark]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -88,14 +81,7 @@ export const Navbar: React.FC = () => {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => setIsDark((d) => !d)}
-            className={iconButton}
-            aria-label={isDark ? 'الوضع النهاري' : 'الوضع الليلي'}
-          >
-            {isDark ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
-          </button>
+          <ThemeSelector />
           <Link to="/admin" className={`${iconButton} hidden sm:inline-flex`} aria-label="لوحة الإدارة">
             <Lock className="w-[18px] h-[18px]" />
           </Link>
