@@ -20,7 +20,7 @@ import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animation
 import { StarMark } from '../components/StarMark';
 import { VersePanel } from '../components/VersePanel';
 import { getPublishableVerses } from '../data/verses';
-import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
+import logoImg from '../assets/logo-brand.webp';
 
 export const Home: React.FC = () => {
   const [featuredPrograms, setFeaturedPrograms] = useState<Program[]>([]);
@@ -66,7 +66,7 @@ export const Home: React.FC = () => {
       
       {/* 1. Hero */}
       <section className="relative bg-emerald-950 text-white border-b border-gold-500/50 overflow-hidden">
-        <div aria-hidden className="absolute inset-0 islamic-arabesque-bg opacity-80 drift-slow" />
+        <div aria-hidden className="absolute -inset-[144px] islamic-arabesque-bg opacity-80 drift-slow" />
         <div aria-hidden className="absolute inset-0 glow-breathe bg-[radial-gradient(ellipse_at_28%_45%,rgba(191,149,52,0.22),transparent_55%)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[1.15fr_0.85fr] items-center gap-10 lg:gap-6">

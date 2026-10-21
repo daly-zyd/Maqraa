@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Globe, Phone } from 'lucide-react';
 import { StarMark } from './StarMark';
-import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
+import logoImg from '../assets/logo-brand.webp';
 
 const quickLinks = [
   { name: 'الرئيسية', path: '/' },

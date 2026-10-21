@@ -242,9 +242,10 @@
 
 /* Hero ground: khatam lattice drifting very slowly, plus a breathing glow */
 @keyframes drift {
-  to { background-position: 144px 72px; }
+  to { transform: translate3d(144px, 72px, 0); }
 }
-.drift-slow { animation: drift 90s linear infinite; }
+/* transform-only (compositor) drift: the layer is oversized by two lattice tiles so its edges never show */
+.drift-slow { animation: drift 90s linear infinite; will-change: transform; }
 @keyframes glow-breathe {
   0%, 100% { opacity: 0.75; }
   50% { opacity: 1; }

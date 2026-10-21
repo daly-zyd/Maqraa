@@ -16,6 +16,12 @@ const [,, route, out, w = '1440', dark = '0', full = '0', maqraa = 'default'] = 
   }
   const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 0) console.log('HORIZONTAL OVERFLOW', overflow, 'px on', route, w);
-  await p.screenshot({ path: out, fullPage: full === '1' });
+  if (full === '1') {
+    // tall viewport instead of stitching: sticky/fixed elements stay where a visitor would see them
+    const h = await p.evaluate(() => document.documentElement.scrollHeight);
+    await p.setViewportSize({ width: +w, height: Math.min(h, 12000) });
+    await p.waitForTimeout(400);
+  }
+  await p.screenshot({ path: out });
   await b.close();
 })();

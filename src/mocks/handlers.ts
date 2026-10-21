@@ -1,12 +1,11 @@
 import { http, HttpResponse } from 'msw';
 import type { Me } from '../features/auth/types';
+import { DEMO_OTP, DEMO_PASSWORD } from './constants';
 
 /**
  * Mock of the Django auth contract (backend/apps/accounts + GET /me/). Used while no API is configured.
  * Demo accounts only: nothing here is a real account or secret.
  */
-export const DEMO_PASSWORD = 'Demo-Passw0rd!';
-export const DEMO_OTP = '123456';
 
 const SHEIKH_CAPS = ['schedule.view_own', 'session.confirm', 'session.declare_absence', 'substitution.accept', 'stats.view'];
 const ADMIN_CAPS = [

@@ -4,7 +4,7 @@ import { Menu, X, Lock } from 'lucide-react';
 import { ThemeSelector } from '../features/theme/ThemeSelector';
 import { UserMenu } from '../features/auth/UserMenu';
 import { StarMark } from './StarMark';
-import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
+import logoImg from '../assets/logo-brand.webp';
 
 const navLinks = [
   { name: 'الرئيسية', path: '/' },

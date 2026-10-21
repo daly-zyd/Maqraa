@@ -1,9 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import logoImg from "../assets/Logo Bel Quroan Nahyaa.png";
+import logoImg from "../assets/logo-brand.webp";
+
+/** The intro plays once per browser session and never for visitors who prefer reduced motion. */
+const SEEN_KEY = 'maqraa_intro_seen';
+const shouldPlay = (() => {
+  try {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    if (sessionStorage.getItem(SEEN_KEY)) return false;
+    sessionStorage.setItem(SEEN_KEY, '1');
+  } catch {
+    /* storage blocked: play it */
+  }
+  return true;
+})();
 
 export const CinemaIntro: React.FC = () => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(shouldPlay);
   const [isClosing, setIsClosing] = useState(false);
   const [hasSettled, setHasSettled] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -12,17 +25,17 @@ export const CinemaIntro: React.FC = () => {
     // Phase 1: Settle banner at ~1.8s
     const settleTimer = setTimeout(() => {
       setHasSettled(true);
-    }, 1800);
+    }, 1200);
 
     // Phase 2: Start smooth exit ascent at 4.2s
     const exitTimer = setTimeout(() => {
       setIsClosing(true);
-    }, 4200);
+    }, 2800);
 
     // Phase 3: Unmount at 5.1s
     const unmountTimer = setTimeout(() => {
       setVisible(false);
-    }, 5100);
+    }, 3500);
 
     timerRef.current = [settleTimer, exitTimer, unmountTimer];
 

@@ -5,9 +5,9 @@ import { authService } from '../services/authService';
 import { apiErrorMessage } from '../lib/apiClient';
 import { useAuth } from '../features/auth/AuthContext';
 import { mockActive } from '../mocks/enable';
-import { DEMO_OTP, DEMO_PASSWORD } from '../mocks/handlers';
+import { DEMO_OTP, DEMO_PASSWORD } from '../mocks/constants';
 import { OrnamentDivider } from '../components/OrnamentDivider';
-import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
+import logoImg from '../assets/logo-brand.webp';
 
 type Step = 'password' | 'otp-send' | 'otp-verify' | 'forgot' | 'reset';
 

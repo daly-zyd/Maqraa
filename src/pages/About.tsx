@@ -4,7 +4,7 @@ import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animation
 import { IslamicAvatar } from '../components/Avatars';
 import { getSettings } from '../data';
 import type { MaqraaSettings } from '../data';
-import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
+import logoImg from '../assets/logo-brand.webp';
 import { OrnamentDivider } from '../components/OrnamentDivider';
 
 export const About: React.FC = () => {
