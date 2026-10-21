@@ -283,11 +283,11 @@ export const Home: React.FC = () => {
 
           {/* 2. Women WhatsApp Card */}
           <FadeInUp delay={0.1} className="bg-white dark:bg-emerald-900/25 p-7 sm:p-9 rounded-3xl border border-stone-200/70 dark:border-gold-500/20 shadow-xl relative overflow-hidden flex flex-col justify-between gap-6">
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-l from-purple-600 to-purple-400" />
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-l from-lapis-600 to-lapis-400" />
             
             <div className="flex flex-col gap-5">
               <div className="flex items-center gap-3.5">
-                <div className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 flex items-center justify-center shadow-inner flex-shrink-0">
+                <div className="w-14 h-14 rounded-2xl bg-lapis-100 dark:bg-lapis-900/50 text-lapis-700 dark:text-lapis-300 flex items-center justify-center shadow-inner flex-shrink-0">
                   <Users className="w-7 h-7" />
                 </div>
                 <div>
@@ -304,15 +304,15 @@ export const Home: React.FC = () => {
 
               <ul className="space-y-2 text-xs text-stone-600 dark:text-stone-300">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-purple-600 dark:text-gold-400 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-lapis-600 dark:text-gold-400 flex-shrink-0" />
                   <span>فصل تام وخصوصية مطلقة للأخوات 100%</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-purple-600 dark:text-gold-400 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-lapis-600 dark:text-gold-400 flex-shrink-0" />
                   <span>إشراف وتسميع مباشر من معلمات متخصصات</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-purple-600 dark:text-gold-400 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-lapis-600 dark:text-gold-400 flex-shrink-0" />
                   <span>بيئة إيمانية تربوية محفزة لجميع الأعمار</span>
                 </li>
               </ul>
@@ -322,7 +322,7 @@ export const Home: React.FC = () => {
               href={womenWhatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3.5 px-6 rounded-2xl font-bold text-center text-sm text-white bg-gradient-to-l from-purple-800 to-purple-700 hover:from-purple-700 hover:to-purple-600 shadow-lg hover:scale-102 transition-all flex items-center justify-center gap-2.5"
+              className="w-full py-3.5 px-6 rounded-2xl font-bold text-center text-sm text-white bg-gradient-to-l from-lapis-800 to-lapis-700 hover:from-lapis-700 hover:to-lapis-600 shadow-lg hover:scale-102 transition-all flex items-center justify-center gap-2.5"
             >
               <MessageCircle className="w-5 h-5" />
               <span>انضمي إلى مجموعة النساء عبر WhatsApp</span>

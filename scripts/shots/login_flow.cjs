@@ -1,0 +1,32 @@
+// End-to-end check of the login flow against the mock API; prints a pass/fail line per step.
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+  const p = await b.newPage({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'allow' });
+  const errs = []; p.on('pageerror', (e) => errs.push(String(e)));
+  const ok = (name, cond) => console.log((cond ? 'PASS ' : 'FAIL ') + name);
+  await p.goto('http://127.0.0.1:5199/Maqraa/#/dashboard', { waitUntil: 'networkidle' });
+  await p.waitForTimeout(9000);
+  ok('guard redirects to /login', p.url().endsWith('#/login'));
+  await p.fill('input[autocomplete=username]', 'admin.demo');
+  await p.fill('input[autocomplete=current-password]', 'wrong-password');
+  await p.click('button[type=submit]'); await p.waitForTimeout(800);
+  ok('wrong password shows Arabic error', (await p.locator('[role=alert]').innerText()).includes('غير صحيحة'));
+  await p.fill('input[autocomplete=current-password]', 'Demo-Passw0rd!');
+  await p.click('button[type=submit]'); await p.waitForTimeout(1500);
+  ok('login lands on dashboard', p.url().endsWith('#/dashboard'));
+  ok('admin sees access tile', await p.getByText('الصلاحيات').first().isVisible());
+  await p.reload({ waitUntil: 'networkidle' }); await p.waitForTimeout(9000);
+  ok('session survives reload', p.url().endsWith('#/dashboard'));
+  await p.getByRole('button', { name: /مشرف تجريبي/ }).click();
+  await p.getByRole('menuitem', { name: /تسجيل الخروج/ }).click(); await p.waitForTimeout(800);
+  ok('logout returns home + shows login link', await p.getByRole('link', { name: 'تسجيل الدخول' }).first().isVisible());
+  await p.goto('http://127.0.0.1:5199/Maqraa/#/login'); await p.waitForTimeout(500);
+  await p.getByText('أرسل لي رمزا على واتساب').click();
+  await p.fill('input[autocomplete=username]', '98123456'); await p.click('button[type=submit]'); await p.waitForTimeout(800);
+  await p.fill('input[autocomplete=one-time-code]', '123456'); await p.click('button[type=submit]'); await p.waitForTimeout(1500);
+  ok('WhatsApp code login works', p.url().endsWith('#/dashboard'));
+  ok('sheikh has no access tile (permission-driven)', (await p.getByText('منح الأدوار وسحبها').count()) === 0);
+  ok('no page errors', errs.length === 0); if (errs.length) console.log(errs);
+  await b.close();
+})();

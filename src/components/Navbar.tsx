@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Lock } from 'lucide-react';
 import { ThemeSelector } from '../features/theme/ThemeSelector';
+import { UserMenu } from '../features/auth/UserMenu';
 import { StarMark } from './StarMark';
 import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
 
@@ -85,9 +86,10 @@ export const Navbar: React.FC = () => {
           <Link to="/admin" className={`${iconButton} hidden sm:inline-flex`} aria-label="لوحة الإدارة">
             <Lock className="w-[18px] h-[18px]" />
           </Link>
+          <div className="hidden sm:block ms-2"><UserMenu /></div>
           <a
             href="/#online-learning"
-            className="hidden sm:inline-flex ms-2 items-center px-6 py-2.5 rounded-full text-sm font-bold text-emerald-950 bg-gradient-to-b from-gold-300 to-gold-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_6px_16px_-6px_rgba(156,118,35,0.7)] hover:from-gold-200 hover:to-gold-400 transition-colors"
+            className="hidden sm:inline-flex ms-1 items-center px-6 py-2.5 rounded-full text-sm font-bold text-emerald-950 bg-gradient-to-b from-gold-300 to-gold-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_6px_16px_-6px_rgba(156,118,35,0.7)] hover:from-gold-200 hover:to-gold-400 transition-colors"
           >
             انضم مجاناً
           </a>
@@ -129,9 +131,10 @@ export const Navbar: React.FC = () => {
               );
             })}
           </ul>
+          <div className="mt-4"><UserMenu block onNavigate={() => setIsOpen(false)} /></div>
           <a
             href="/#online-learning"
-            className="mt-4 flex items-center justify-center py-3.5 rounded-full font-bold text-emerald-950 bg-gradient-to-b from-gold-300 to-gold-500"
+            className="mt-3 flex items-center justify-center py-3.5 rounded-full font-bold text-emerald-950 bg-gradient-to-b from-gold-300 to-gold-500"
           >
             انضم إلى المقرأة مجاناً
           </a>

@@ -11,6 +11,10 @@ import Tazkiya from '../pages/Tazkiya';
 import Contact from '../pages/Contact';
 import Admin from '../pages/Admin';
 import Styleguide from '../pages/Styleguide';
+import Login from '../pages/Login';
+import Dashboard from '../pages/Dashboard';
+import Profile from '../pages/Profile';
+import { RequireAuth } from '../features/auth/RequireAuth';
 import { ScrollToTop } from '../components/ScrollToTop';
 
 export const AppRoutes: React.FC = () => {
@@ -32,6 +36,9 @@ export const AppRoutes: React.FC = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/styleguide" element={<Styleguide />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
           {/* Catch-all fallback */}
           <Route path="*" element={<Home />} />
         </Routes>
