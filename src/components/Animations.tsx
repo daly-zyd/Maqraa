@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface AnimationProps {
   children: React.ReactNode;
@@ -8,6 +8,8 @@ interface AnimationProps {
 }
 
 export const FadeInUp: React.FC<AnimationProps> = ({ children, className = '', delay = 0 }) => {
+  const reduce = useReducedMotion();
+  if (reduce) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -22,6 +24,8 @@ export const FadeInUp: React.FC<AnimationProps> = ({ children, className = '', d
 };
 
 export const FadeIn: React.FC<AnimationProps> = ({ children, className = '', delay = 0 }) => {
+  const reduce = useReducedMotion();
+  if (reduce) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -36,6 +40,8 @@ export const FadeIn: React.FC<AnimationProps> = ({ children, className = '', del
 };
 
 export const SlideInRight: React.FC<AnimationProps> = ({ children, className = '', delay = 0 }) => {
+  const reduce = useReducedMotion();
+  if (reduce) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, x: -40 }}

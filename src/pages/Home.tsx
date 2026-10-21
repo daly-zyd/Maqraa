@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animations';
 import { StarMark } from '../components/StarMark';
+import { VersePanel } from '../components/VersePanel';
+import { getPublishableVerses } from '../data/verses';
 import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
 
 export const Home: React.FC = () => {
@@ -51,6 +53,8 @@ export const Home: React.FC = () => {
     { id: 4, name: 'برامج قرآنية متخصصة', value: '10', icon: BookOpen }
   ];
 
+  const featuredVerse = getPublishableVerses().find((v) => v.kind === 'ayah');
+
   const menWhatsappUrl = settings?.whatsappMenUrl || 'https://chat.whatsapp.com/G4g5nZL24LsJ7wjUIt6pgV';
   const womenWhatsappUrl = settings?.whatsappWomenUrl || 'https://chat.whatsapp.com/Iz6Txl9YYFFKSAacjm4Oyx';
   const founderName = settings?.founderName || 'فضيلة الشيخ شريف سعد';
@@ -62,8 +66,8 @@ export const Home: React.FC = () => {
       
       {/* 1. Hero */}
       <section className="relative bg-emerald-950 text-white border-b border-gold-500/50 overflow-hidden">
-        <div aria-hidden className="absolute inset-0 islamic-arabesque-bg opacity-80" />
-        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_28%_45%,rgba(191,149,52,0.22),transparent_55%)]" />
+        <div aria-hidden className="absolute inset-0 islamic-arabesque-bg opacity-80 drift-slow" />
+        <div aria-hidden className="absolute inset-0 glow-breathe bg-[radial-gradient(ellipse_at_28%_45%,rgba(191,149,52,0.22),transparent_55%)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[1.15fr_0.85fr] items-center gap-10 lg:gap-6">
           {/* Words */}
@@ -131,30 +135,29 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. Stats Section */}
-      <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
-        <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <StaggerItem 
-                key={stat.id} 
-                className="bg-white/95 dark:bg-emerald-900/40 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-gold-500/30 dark:border-gold-500/20 shadow-lg text-center flex flex-col items-center gap-2.5 group hover:border-gold-500/60 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
-              >
-                <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-100 to-emerald-50 dark:from-emerald-800/80 dark:to-emerald-900/60 text-emerald-800 dark:text-gold-400 group-hover:scale-110 shadow-inner transition-transform duration-300">
-                  <Icon className="w-6 h-6" />
-                </div>
-                <div className="font-amiri text-2xl sm:text-3xl font-black text-emerald-950 dark:text-gold-200">
-                  {stat.value}
-                </div>
-                <div className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 font-medium">
-                  {stat.name}
-                </div>
-              </StaggerItem>
-            );
-          })}
+      {/* 2. Stats band: figures divided by gilt rules, no cards */}
+      <section className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10">
+        <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 rounded-[28px] bg-paper dark:bg-emerald-950 mushaf-frame shadow-[0_24px_48px_-24px_rgba(4,24,18,0.55)]">
+          {stats.map((stat, i) => (
+            <StaggerItem
+              key={stat.id}
+              className={`py-7 px-4 text-center ${i % 2 === 1 ? 'border-s' : ''} ${i >= 2 ? 'border-t lg:border-t-0' : ''} ${i > 0 ? 'lg:border-s' : ''} border-gold-600/25`}
+            >
+              <div className="font-amiri text-3xl sm:text-4xl font-bold text-emerald-800 dark:text-gold-300">{stat.value}</div>
+              <div className="mt-1 text-sm sm:text-[15px] text-stone-600 dark:text-stone-300">{stat.name}</div>
+            </StaggerItem>
+          ))}
         </StaggerContainer>
       </section>
+
+      {/* Verse of the day: only approved entries are public (see data/verses.ts) */}
+      {featuredVerse && (
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-16">
+          <FadeInUp>
+            <VersePanel verse={featuredVerse} />
+          </FadeInUp>
+        </section>
+      )}
 
       {/* 3. Founder Spotlight Section (فضيلة الشيخ شريف) */}
       <section className="py-10 sm:py-12 bg-amber-500/5 dark:bg-emerald-950/20 border-y border-gold-500/20">

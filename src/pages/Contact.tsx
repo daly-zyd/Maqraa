@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, Globe, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animations';
 import { sendContactEmail } from '../data';
+import { OrnamentDivider } from '../components/OrnamentDivider';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -86,7 +87,7 @@ export const Contact: React.FC = () => {
         <h1 className="font-amiri text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-950 dark:text-gold-100 mb-4">
           تواصل معنا والتسجيل
         </h1>
-        <div className="w-20 h-1 bg-gradient-to-r from-gold-600 via-gold-400 to-gold-600 mx-auto rounded-full mb-6" />
+        <OrnamentDivider />
         <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 font-light leading-relaxed">
           يسعدنا الرد على جميع استفساراتكم المتعلقة بالبرامج والحلقات وطرق الانضمام لمجموعات المقرأة.
         </p>

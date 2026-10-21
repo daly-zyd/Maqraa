@@ -3,6 +3,7 @@ import { getArticles, getReflections } from '../data';
 import type { Article, Reflection } from '../data';
 import { Sparkles, Calendar, User, Quote, X } from 'lucide-react';
 import { FadeInUp } from '../components/Animations';
+import { OrnamentDivider } from '../components/OrnamentDivider';
 
 export const Tazkiya: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -34,7 +35,7 @@ export const Tazkiya: React.FC = () => {
         <h1 className="font-amiri text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-950 dark:text-gold-100 mb-4">
           تزكية وإيمانيات
         </h1>
-        <div className="w-20 h-1 bg-gradient-to-r from-gold-600 via-gold-400 to-gold-600 mx-auto rounded-full mb-6" />
+        <OrnamentDivider />
         <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 font-light leading-relaxed">
           مقالات تربوية وخواطر إيمانية مستوحاة من هدي القرآن الكريم وسنة رسوله ﷺ تعينك على صلاح القلب وزكاة النفس.
         </p>

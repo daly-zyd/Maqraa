@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { FadeInUp, StaggerContainer, StaggerItem } from "../components/Animations";
 import { Link } from "react-router-dom";
+import { OrnamentDivider } from '../components/OrnamentDivider';
 
 type FilterTab = "all" | TeacherCategory | "supervisors" | "tech_support";
 
@@ -109,7 +110,7 @@ export const Teachers: React.FC = () => {
         <h1 className="font-amiri text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-950 dark:text-gold-100 mb-4">
           المشايخ والأساتذة وفريق العمل
         </h1>
-        <div className="w-24 h-1 bg-gradient-to-r from-gold-600 via-gold-400 to-gold-600 mx-auto rounded-full mb-6" />
+        <OrnamentDivider />
         <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 font-light leading-relaxed">
           نخبة متميزة من المشايخ الفضلاء، المقرئات المجازات بالسند المتصل، وفريق إشرافي وتقني ساهر على خدمة طلاب كتاب الله وإدارة الحلقات بأعلى معايير الجودة والإتقان.
         </p>

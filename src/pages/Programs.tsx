@@ -3,6 +3,7 @@ import { getPrograms } from '../data';
 import type { Program } from '../data';
 import { Card } from '../components/Card';
 import { FadeInUp } from '../components/Animations';
+import { OrnamentDivider } from '../components/OrnamentDivider';
 
 export const Programs: React.FC = () => {
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -26,7 +27,7 @@ export const Programs: React.FC = () => {
         <h1 className="font-amiri text-4xl sm:text-5xl font-bold text-emerald-900 dark:text-gold-100 mb-4">
           البرامج التعليمية والحلقات
         </h1>
-        <div className="w-16 h-1 bg-gold-500 mx-auto rounded-full mb-6" />
+        <OrnamentDivider />
         <p className="text-base text-stone-600 dark:text-stone-300 font-light leading-relaxed">
           نقدم مسارات تعليمية مدروسة ومتنوعة تناسب الأطفال، المبتدئين، الحفظة، والراغبين في تحصيل الإجازات القرآنية بالسند المتصل.
         </p>

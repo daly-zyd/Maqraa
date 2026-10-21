@@ -3,6 +3,7 @@ import { getTajweedRules, getStudiedSurahs } from '../data';
 import type { TajweedRule, StudiedSurah } from '../data';
 import { BookOpen, BookMarked, Play, Pause, Volume2, Sparkles, ChevronDown, ChevronUp, Radio, Disc } from 'lucide-react';
 import { FadeInUp } from '../components/Animations';
+import { OrnamentDivider } from '../components/OrnamentDivider';
 
 export const Quran: React.FC = () => {
   const [rules, setRules] = useState<TajweedRule[]>([]);
@@ -46,7 +47,7 @@ export const Quran: React.FC = () => {
         <h1 className="font-amiri text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-950 dark:text-gold-100 mb-4">
           الفضاء القرآني التعليمي
         </h1>
-        <div className="w-20 h-1 bg-gradient-to-r from-gold-600 via-gold-400 to-gold-600 mx-auto rounded-full mb-6" />
+        <OrnamentDivider />
         <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 font-light leading-relaxed">
           موارد تعليمية تفاعلية لشرح أصول التجويد، وتسهيل حفظ السور المقررة، والاستماع إلى التلاوات النموذجية المتقنة.
         </p>

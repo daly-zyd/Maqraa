@@ -24,10 +24,10 @@ export const IslamicAvatar: React.FC<AvatarProps> = ({
 
   return (
     <div
-      className={`relative inline-flex items-center justify-center rounded-2xl p-1 bg-gradient-to-tr from-emerald-900 via-emerald-800 to-emerald-700 dark:from-emerald-950 dark:via-emerald-900 dark:to-emerald-800 border-2 border-gold-500/40 shadow-lg group-hover:scale-105 transition-all duration-300 ${sizeClasses[size]} ${className}`}
+      className={`relative inline-flex items-center justify-center rounded-t-[999px] rounded-b-2xl p-1 bg-gradient-to-tr from-emerald-900 via-emerald-800 to-emerald-700 dark:from-emerald-950 dark:via-emerald-900 dark:to-emerald-800 border-2 border-gold-500/40 shadow-lg group-hover:scale-105 transition-all duration-300 ${sizeClasses[size]} ${className}`}
     >
       {/* Background Islamic Glow */}
-      <div className="absolute inset-0 rounded-2xl bg-gold-500/10 blur-sm pointer-events-none" />
+      <div className="absolute inset-0 rounded-t-[999px] rounded-b-2xl bg-gold-500/10 blur-sm pointer-events-none" />
 
       {isFemale ? (
         // Dignified Woman Teacher Avatar with Modest Hijab Silhouette

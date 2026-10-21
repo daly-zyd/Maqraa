@@ -5,6 +5,7 @@ import { IslamicAvatar } from '../components/Avatars';
 import { getSettings } from '../data';
 import type { MaqraaSettings } from '../data';
 import logoImg from '../assets/Logo Bel Quroan Nahyaa.png';
+import { OrnamentDivider } from '../components/OrnamentDivider';
 
 export const About: React.FC = () => {
   const [settings, setSettings] = useState<MaqraaSettings | null>(null);
@@ -81,7 +82,7 @@ export const About: React.FC = () => {
         <h1 className="font-amiri text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-950 dark:text-gold-100 mb-4">
           عن مقرأة "بالقرآن نحيا"
         </h1>
-        <div className="w-20 h-1 bg-gradient-to-r from-gold-600 via-gold-400 to-gold-600 mx-auto rounded-full mb-6" />
+        <OrnamentDivider />
         <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 max-w-3xl mx-auto leading-relaxed font-light">
           صرح قرآني تعليمي وتربوي تطوعي يُعنى بخدمة كتاب الله عز وجل حفظاً وتجويداً وتدبراً، ويسعى لبناء أجيال قرآنية متمكنة تحمل رسالة الوحي المبارك.
         </p>

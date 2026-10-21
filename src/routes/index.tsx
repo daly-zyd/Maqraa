@@ -10,6 +10,7 @@ import Quran from '../pages/Quran';
 import Tazkiya from '../pages/Tazkiya';
 import Contact from '../pages/Contact';
 import Admin from '../pages/Admin';
+import Styleguide from '../pages/Styleguide';
 import { ScrollToTop } from '../components/ScrollToTop';
 
 export const AppRoutes: React.FC = () => {
@@ -30,6 +31,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="/events" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/styleguide" element={<Styleguide />} />
           {/* Catch-all fallback */}
           <Route path="*" element={<Home />} />
         </Routes>
