@@ -96,3 +96,10 @@ LOGIN_MAX_FAILURES = 5
 LOGIN_LOCK_MINUTES = 15
 LOGIN_MAX_FAILURES_PER_IP = 30
 DEFAULT_PHONE_REGION = "TN"
+
+# One-time codes over WhatsApp. The sender is a dotted path to `callable(phone_e164, text)`; the default only
+# logs (development). Production points it at the WhatsApp outbox adapter once that exists.
+OTP_TTL_MINUTES = 10
+OTP_MAX_ATTEMPTS = 5
+OTP_MAX_PER_HOUR = 5
+OTP_SENDER = "integrations.whatsapp_otp.log_sender"

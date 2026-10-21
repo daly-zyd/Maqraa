@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db.models import F
 
-from .models import AuthAttempt, User
+from .models import AuthAttempt, OtpChallenge, User
 
 
 def find_user_for_login(*, username: str | None, email: str | None, phone: str | None) -> User | None:
@@ -55,3 +55,31 @@ def clear_failures(identifier_key: str) -> None:
 
 def set_super_admin(user_id: int, value: bool) -> None:
     User.objects.filter(pk=user_id).update(is_super_admin=value, token_version=F("token_version") + 1)
+
+
+def create_otp(*, user: User, purpose: str, code_hash: str, expires_at: datetime) -> OtpChallenge:
+    OtpChallenge.objects.filter(user=user, purpose=purpose, consumed=False).update(consumed=True)
+    return OtpChallenge.objects.create(user=user, purpose=purpose, code_hash=code_hash, expires_at=expires_at)
+
+
+def count_otps_since(*, user: User, since: datetime) -> int:
+    return OtpChallenge.objects.filter(user=user, created_at__gte=since).count()
+
+
+def active_otp(*, user: User, purpose: str, now: datetime) -> OtpChallenge | None:
+    return (OtpChallenge.objects.filter(user=user, purpose=purpose, consumed=False, expires_at__gt=now)
+            .order_by("-created_at").first())
+
+
+def register_otp_attempt(challenge: OtpChallenge) -> None:
+    OtpChallenge.objects.filter(pk=challenge.pk).update(attempts=F("attempts") + 1)
+
+
+def consume_otp(challenge: OtpChallenge) -> None:
+    OtpChallenge.objects.filter(pk=challenge.pk).update(consumed=True)
+
+
+def set_password(user: User, raw_password: str) -> None:
+    user.set_password(raw_password)
+    user.token_version += 1  # every existing session ends
+    user.save(update_fields=["password", "token_version"])

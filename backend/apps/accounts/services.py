@@ -1,19 +1,24 @@
 """Authentication business rules: identifier resolution, lockout, versioned JWT, refresh rotation."""
 from __future__ import annotations
 
+import secrets
 from datetime import timedelta
 
 import phonenumbers
 from django.conf import settings
 from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils import timezone
+from django.utils.module_loading import import_string
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.audit import services as audit
-from apps.core.exceptions import AuthenticationFailure, TooManyAttempts
+from apps.core.exceptions import AuthenticationFailure, TooManyAttempts, ValidationFailure
 
 from . import repositories
+from .models import OtpChallenge
 
 _DUMMY_HASH = make_password("dummy-password-for-constant-time")
 
@@ -116,3 +121,64 @@ def count_active_super_admins() -> int:
 
 def set_super_admin(user_id: int, value: bool) -> None:
     repositories.set_super_admin(user_id, value)
+
+
+# ---- WhatsApp one-time codes ---------------------------------------------------------------------
+_OTP_TEXT = {
+    OtpChallenge.PURPOSE_LOGIN: "رمز الدخول إلى مقرأة بالقرآن نحيا: {code}\nصالح {minutes} دقائق. لا تشاركه مع أحد.",
+    OtpChallenge.PURPOSE_RESET: (
+        "رمز استعادة كلمة المرور لمقرأة بالقرآن نحيا: {code}\nصالح {minutes} دقائق. لا تشاركه مع أحد."
+    ),
+}
+
+
+def request_otp(identifier: str, purpose: str, *, ip: str | None = None) -> None:
+    """Always returns silently: the caller can never tell whether the account exists or has a phone."""
+    user = repositories.find_user_for_login(**_classify(identifier))
+    if user is None or not user.is_active or not user.phone:
+        audit.record(None, "auth.otp_skipped", object_type="login", object_id=(identifier or "")[:190], ip=ip,
+                     outcome="denied")
+        return
+    now = timezone.now()
+    if repositories.count_otps_since(user=user, since=now - timedelta(hours=1)) >= settings.OTP_MAX_PER_HOUR:
+        audit.record(user, "auth.otp_throttled", object_type="User", object_id=user.pk, ip=ip, outcome="denied")
+        return
+    code = f"{secrets.randbelow(10**6):06d}"
+    repositories.create_otp(user=user, purpose=purpose, code_hash=make_password(code),
+                            expires_at=now + timedelta(minutes=settings.OTP_TTL_MINUTES))
+    text = _OTP_TEXT[purpose].format(code=code, minutes=settings.OTP_TTL_MINUTES)
+    import_string(settings.OTP_SENDER)(user.phone, text)
+    audit.record(user, "auth.otp_sent", object_type="User", object_id=user.pk, ip=ip)
+
+
+def _check_otp(identifier: str, code: str, purpose: str, *, ip: str | None):
+    user = repositories.find_user_for_login(**_classify(identifier))
+    challenge = repositories.active_otp(user=user, purpose=purpose, now=timezone.now()) if user else None
+    if challenge is None or not user.is_active or challenge.attempts >= settings.OTP_MAX_ATTEMPTS:
+        check_password(code or "", _DUMMY_HASH)
+        audit.record(None, "auth.otp_failed", object_type="login", object_id=(identifier or "")[:190], ip=ip,
+                     outcome="denied")
+        raise AuthenticationFailure("الرمز غير صحيح أو انتهت صلاحيته")
+    if not check_password((code or "").strip(), challenge.code_hash):
+        repositories.register_otp_attempt(challenge)
+        audit.record(user, "auth.otp_failed", object_type="User", object_id=user.pk, ip=ip, outcome="denied")
+        raise AuthenticationFailure("الرمز غير صحيح أو انتهت صلاحيته")
+    repositories.consume_otp(challenge)
+    return user
+
+
+def login_with_otp(identifier: str, code: str, *, ip: str | None = None) -> dict:
+    user = _check_otp(identifier, code, OtpChallenge.PURPOSE_LOGIN, ip=ip)
+    audit.record(user, "auth.login_otp", object_type="User", object_id=user.pk, ip=ip)
+    return {**_tokens_for(user), "user": {"id": user.pk, "username": user.username}}
+
+
+def reset_password(identifier: str, code: str, new_password: str, *, ip: str | None = None) -> None:
+    user = _check_otp(identifier, code, OtpChallenge.PURPOSE_RESET, ip=ip)
+    try:
+        validate_password(new_password, user)
+    except DjangoValidationError as exc:
+        raise ValidationFailure("كلمة المرور ضعيفة", errors={"new_password": list(exc.messages)}) from None
+    repositories.set_password(user, new_password)
+    repositories.clear_failures((identifier or "").strip().lower()[:190])
+    audit.record(user, "auth.password_reset", object_type="User", object_id=user.pk, ip=ip)

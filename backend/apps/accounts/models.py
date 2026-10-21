@@ -64,3 +64,18 @@ class AuthAttempt(models.Model):
     ip = models.GenericIPAddressField(null=True, blank=True, db_index=True)
     success = models.BooleanField(default=False)
     at = models.DateTimeField(default=timezone.now, db_index=True)
+
+
+class OtpChallenge(models.Model):
+    """One-time code sent over WhatsApp (login or password reset). Only a hash of the code is stored."""
+
+    PURPOSE_LOGIN = "login"
+    PURPOSE_RESET = "reset"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="otp_challenges")
+    purpose = models.CharField(max_length=10)
+    code_hash = models.CharField(max_length=256)
+    created_at = models.DateTimeField(default=timezone.now, db_index=True)
+    expires_at = models.DateTimeField()
+    attempts = models.PositiveSmallIntegerField(default=0)
+    consumed = models.BooleanField(default=False)
