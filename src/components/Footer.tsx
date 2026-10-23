@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Globe, Phone } from 'lucide-react';
-import { StarMark } from './StarMark';
+import { Rosette, StarBullet } from './Rosette';
 import logoImg from '../assets/logo-brand.webp';
 
 const quickLinks = [
@@ -13,41 +13,49 @@ const quickLinks = [
   { name: 'اتصل بنا', path: '/contact' }
 ];
 
-const headingClass = 'font-bold text-gold-300 text-lg mb-4 flex items-center gap-2.5';
+const headingClass = 'flex items-center gap-2.5 mb-5 text-lg font-semibold text-gold-300';
 
 export const Footer: React.FC = () => {
   const gregorian = new Date().getFullYear();
   const hijri = Math.round(((gregorian - 622) * 33) / 32);
 
   return (
-    <footer className="relative bg-emerald-950 text-stone-300 border-t border-gold-500/50 overflow-hidden">
-      <div aria-hidden className="absolute inset-0 islamic-arabesque-bg opacity-70 pointer-events-none" />
+    <footer className="dark relative z-10 overflow-hidden bg-night text-mist-300 border-t border-gold-500/25">
+      <div aria-hidden className="absolute inset-0 islamic-arabesque-bg opacity-70" />
+      <Rosette weight={0.6} className="turn-slow absolute -bottom-56 -end-48 w-[560px] aspect-square text-gold-500 opacity-15" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-14 pb-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1.2fr] gap-12">
           <section>
-            <div className="flex items-center gap-4 mb-5">
-              <img src={logoImg} alt="" width={64} height={64} loading="lazy" className="w-16 h-16 object-contain" />
-              <div className="leading-none">
-                <p className="font-thuluth text-3xl text-gilded">بالقرآن نحيا</p>
-                <p className="mt-2 text-xs font-semibold text-gold-400">مقرأة قرآنية مجانية</p>
-              </div>
-            </div>
-            <p className="max-w-md text-[15px] leading-8 text-stone-300">
+            <Link to="/" className="inline-flex items-center gap-4 mb-5" aria-label="مقرأة بالقرآن نحيا — الرئيسية">
+              <img
+                src={logoImg}
+                alt=""
+                width={64}
+                height={64}
+                loading="lazy"
+                className="w-16 h-16 rounded-full object-cover shadow-[0_0_0_1px_rgba(212,175,106,0.5)]"
+              />
+              <span className="leading-tight">
+                <span className="block font-display text-3xl text-gold-400">بالقرآن نحيا</span>
+                <span className="block mt-1 text-xs text-mist-400">مقرأة قرآنية مجانية عن بُعد</span>
+              </span>
+            </Link>
+            <p className="max-w-md text-[15px] leading-8">
               منصة تعليمية تُعنى بحفظ القرآن الكريم وضبط تلاوته بالسند المتصل عن بُعد، تحت إشراف فضيلة الشيخ شريف سعد،
               مؤسس المقرأة والمشرف العام عليها. الالتحاق مجاني لجميع الراغبين في العالم.
             </p>
           </section>
 
           <nav aria-label="أقسام المنصة">
-            <h3 className={headingClass}>
-              <StarMark className="w-3.5 h-3.5" />
+            <h2 className={headingClass}>
+              <StarBullet className="w-2.5 h-2.5 text-gold-500" />
               أقسام المنصة
-            </h3>
-            <ul className="grid grid-cols-1 gap-2.5">
+            </h2>
+            <ul className="grid gap-3">
               {quickLinks.map((link) => (
                 <li key={link.path}>
-                  <Link to={link.path} className="text-[15px] text-stone-300 hover:text-gold-300 transition-colors">
+                  <Link to={link.path} className="text-[15px] text-mist-300 hover:text-gold-200 transition-colors">
                     {link.name}
                   </Link>
                 </li>
@@ -56,34 +64,36 @@ export const Footer: React.FC = () => {
           </nav>
 
           <section>
-            <h3 className={headingClass}>
-              <StarMark className="w-3.5 h-3.5" />
+            <h2 className={headingClass}>
+              <StarBullet className="w-2.5 h-2.5 text-gold-500" />
               التواصل
-            </h3>
-            <ul className="space-y-3.5 text-[15px]">
+            </h2>
+            <ul className="space-y-4 text-[15px]">
               <li className="flex items-start gap-3">
-                <Globe className="w-5 h-5 text-gold-400 shrink-0 mt-1.5" aria-hidden />
+                <Globe className="w-5 h-5 text-gold-500 shrink-0 mt-1.5" aria-hidden />
                 <span>حلقات التعليم القرآني عن بُعد، عبر الإنترنت لجميع أنحاء العالم</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-gold-400 shrink-0" aria-hidden />
-                <span dir="ltr" className="text-start">+216 58 445 289 · +20 10 62666368</span>
+                <Phone className="w-5 h-5 text-gold-500 shrink-0" aria-hidden />
+                <bdi className="tabular-nums">+216 58 445 289 · +20 10 62666368</bdi>
               </li>
               <li className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-gold-400 shrink-0" aria-hidden />
-                <span dir="ltr" className="text-start break-all">maqraa.belquorannehya@gmail.com</span>
+                <Mail className="w-5 h-5 text-gold-500 shrink-0" aria-hidden />
+                <a href="mailto:maqraa.belquorannehya@gmail.com" className="break-all hover:text-gold-200 transition-colors">
+                  <bdi>maqraa.belquorannehya@gmail.com</bdi>
+                </a>
               </li>
             </ul>
           </section>
         </div>
 
-        <div className="mt-10 mb-6 flex items-center gap-4 text-gold-500/70" aria-hidden>
+        <div aria-hidden className="mt-12 mb-6 flex items-center gap-4 text-gold-500/70">
           <span className="h-px flex-1 bg-gradient-to-l from-gold-500/50 to-transparent" />
-          <StarMark className="w-5 h-5" />
+          <StarBullet className="w-3.5 h-3.5" />
           <span className="h-px flex-1 bg-gradient-to-r from-gold-500/50 to-transparent" />
         </div>
 
-        <p className="text-sm text-stone-400 text-center">
+        <p className="text-sm text-mist-400 text-center">
           جميع الحقوق محفوظة لمقرأة بالقرآن نحيا © {hijri}هـ / {gregorian}م
         </p>
       </div>

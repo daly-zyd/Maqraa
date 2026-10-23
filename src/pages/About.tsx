@@ -1,217 +1,137 @@
 import React, { useState, useEffect } from 'react';
-import { Target, Eye, Sparkles, BookOpen, ShieldCheck, Heart, CheckCircle2, Award, HeartHandshake } from 'lucide-react';
-import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animations';
-import { IslamicAvatar } from '../components/Avatars';
+import { BookOpen, Eye, Heart, HeartHandshake, ShieldCheck, Target } from 'lucide-react';
 import { getSettings } from '../data';
 import type { MaqraaSettings } from '../data';
-import logoImg from '../assets/logo-brand.webp';
-import { OrnamentDivider } from '../components/OrnamentDivider';
+import { ArchPortrait } from '../components/ArchPortrait';
+import { PageHeader } from '../components/PageHeader';
+import { Reveal } from '../components/Reveal';
+import { Rosette, StarBullet } from '../components/Rosette';
+
+const VALUES = [
+  { title: 'الإحسان والتميز', desc: 'نسعى لبلوغ مراتب الإتقان في تلاوة كتاب الله وتعليمه، وغرس قيم الجودة والتدبر في كل حلقة.', icon: ShieldCheck },
+  { title: 'المجانية لوجه الله', desc: 'تعليم قرآني بالمجان دون أي مقابل، تيسيراً لكتاب الله ونشراً لعلومه في أرجاء العالم.', icon: HeartHandshake },
+  { title: 'التربية والأخوة', desc: 'بيئة حاضنة مبنية على التناصح والتراحم والاحترام، لتتحول الحلقات إلى أسر إيمانية.', icon: Heart },
+  { title: 'الأصالة والمعاصرة', desc: 'نحافظ على السند وطرق التلقي العريقة، مستعينين بأحدث وسائل التعليم عن بُعد.', icon: BookOpen }
+];
+
+const PILLARS = [
+  'إسناد متصل وصحيح إلى النبي ﷺ',
+  'تعليم مجاني 100% متاح لجميع دول العالم',
+  'فصل تام وخصوصية كاملة بين قسمي الرجال والنساء',
+  'دراسة تفاعلية عن بُعد عبر مجموعات واتساب المخصصة',
+  'كوادر إدارية وتعليمية معتمدة ومتخصصة',
+  'متابعة فردية ونظام تقييم واختبارات دورية'
+];
+
+const MISSION = [
+  {
+    title: 'رسالتنا',
+    icon: Target,
+    text: 'تمكين مختلف فئات المجتمع في كل مكان من الارتباط اليومي بالقرآن الكريم، وضبط التلاوة والمخارج بالحفظ والتسميع المنهجي مجاناً عن بُعد، مع بث روح التزكية والتربية الإيمانية.'
+  },
+  {
+    title: 'رؤيتنا',
+    icon: Eye,
+    text: 'أن نكون مرجعية رائدة في التعليم القرآني عن بُعد، متميزين ببيئتنا الإيمانية الميسرة وضبط السند والإجازات، وتخريج أجيال متقنة لكتاب الله عاملة به.'
+  }
+];
+
+const heading = 'font-display font-bold text-4xl sm:text-5xl leading-tight text-emerald-900 dark:text-gold-300';
 
 export const About: React.FC = () => {
   const [settings, setSettings] = useState<MaqraaSettings | null>(null);
 
-  const fetchSettings = () => {
-    getSettings().then(setSettings);
-  };
-
   useEffect(() => {
-    fetchSettings();
-    window.addEventListener('maqraa_data_updated', fetchSettings);
-    return () => window.removeEventListener('maqraa_data_updated', fetchSettings);
+    const load = () => getSettings().then(setSettings);
+    load();
+    window.addEventListener('maqraa_data_updated', load);
+    return () => window.removeEventListener('maqraa_data_updated', load);
   }, []);
 
   const founderName = settings?.founderName || 'فضيلة الشيخ شريف سعد';
   const founderTitle = settings?.founderTitle || 'مؤسس المقرأة والمشرف العام عليها';
-  const founderBio = settings?.founderBio || 'مقرئ مجاز بالقراءات العشر الصغرى والكبرى بالسند المتصل إلى رسول الله ﷺ، صاحب مسيرة علمية وتربوية حافلة في خدمة كتاب الله وتعليم النشء وتخريج الحفاظ المتقنين على هدي النبوة والسند المتصل.';
-
-  const values = [
-    {
-      id: 'ihsan',
-      title: 'الإحسان والتميز',
-      desc: 'نسعى لبلوغ مراتب الإتقان في تلاوة كتاب الله وتعليمه، وغرس قيم الجودة والتدبر في كل حلقة دراسية.',
-      icon: ShieldCheck
-    },
-    {
-      id: 'free',
-      title: 'المجانية لوجه الله',
-      desc: 'تقديم التعليم القرآني بالمجان دون أي مقابل مالي، تيسيراً لكتاب الله ونشراً لعلومه في أرجاء العالم.',
-      icon: HeartHandshake
-    },
-    {
-      id: 'brotherhood',
-      title: 'التربية والأخوة',
-      desc: 'نوفر بيئة حاضنة مبنية على التناصح، التراحم، والاحترام المتبادل، لتتحول الحلقات إلى أسر إيمانية متعاونة.',
-      icon: Heart
-    },
-    {
-      id: 'authenticity',
-      title: 'الأصالة والمعاصرة',
-      desc: 'نحافظ على السند والإسناد وطرق التلقي العريقة، مستعينين بأحدث الوسائل والتقنيات الرقمية للتعليم عن بُعد.',
-      icon: BookOpen
-    }
-  ];
-
-  const pillars = [
-    'إسناد متصل وصحيح إلى النبي ﷺ',
-    'تعليم مجاني 100% متاح لجميع دول العالم',
-    'فصل تام وخصوصية كاملة بين قسمي الرجال والنساء',
-    'دراسة تفاعلية عن بُعد عبر مجموعات WhatsApp المخصصة',
-    'كوادر إدارية وتعليمية معتمدة ومتخصصة',
-    'متابعة فردية ونظام تقييم واختبارات دورية'
-  ];
+  const founderBio =
+    settings?.founderBio ||
+    'مقرئ مجاز بالقراءات العشر الصغرى والكبرى بالسند المتصل إلى رسول الله ﷺ، صاحب مسيرة علمية وتربوية حافلة في خدمة كتاب الله وتعليم النشء وتخريج الحفاظ المتقنين.';
 
   return (
-    <div className="py-12 sm:py-16 text-right max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      {/* 1. Header Hero */}
-      <FadeInUp className="mb-16 text-center flex flex-col items-center">
-        {/* Logo emblem */}
-        <div className="relative w-28 h-28 sm:w-36 sm:h-36 mb-6 flex items-center justify-center">
-          <img 
-            src={logoImg} 
-            alt="مقرأة بالقرآن نحيا" 
-            className="w-full h-full object-contain drop-shadow-xl"
-          />
-        </div>
+    <div>
+      <PageHeader
+        eyebrow="منارة قرآنية مجانية للتعليم عن بُعد"
+        title="عن مقرأة بالقرآن نحيا"
+        lead="صرح قرآني تعليمي وتربوي تطوعي يُعنى بخدمة كتاب الله حفظاً وتجويداً وتدبراً، ويسعى لبناء أجيال قرآنية تحمل رسالة الوحي."
+      />
 
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold-500/10 text-gold-600 dark:text-gold-400 font-bold text-xs sm:text-sm mb-4">
-          <Sparkles className="w-4 h-4" />
-          <span>منارة قرآنية مجانية للتعليم عن بُعد</span>
-        </div>
-
-        <h1 className="font-amiri text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-950 dark:text-gold-100 mb-4">
-          عن مقرأة "بالقرآن نحيا"
-        </h1>
-        <OrnamentDivider />
-        <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 max-w-3xl mx-auto leading-relaxed font-light">
-          صرح قرآني تعليمي وتربوي تطوعي يُعنى بخدمة كتاب الله عز وجل حفظاً وتجويداً وتدبراً، ويسعى لبناء أجيال قرآنية متمكنة تحمل رسالة الوحي المبارك.
-        </p>
-      </FadeInUp>
-
-      {/* 2. Founder Section Spotlight (فضيلة الشيخ شريف) */}
-      <FadeInUp delay={0.1} className="mb-20">
-        <div className="bg-gradient-to-l from-emerald-950 via-emerald-900 to-stone-900 text-white rounded-3xl p-8 sm:p-12 border border-gold-500/40 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center gap-8">
-          <div className="absolute inset-0 islamic-pattern opacity-8 pointer-events-none" />
-          
-          <div className="flex-shrink-0 flex flex-col items-center gap-3 relative z-10">
-            <IslamicAvatar role="sheikh" gender="male" size="xl" className="shadow-2xl" />
-            <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/30">
-              المؤسس والمشرف العام
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-4 relative z-10 text-right">
-            <span className="text-xs font-bold text-gold-400 flex items-center gap-2">
-              <Award className="w-4 h-4" />
-              <span>إشراف وتوجيه علمي مباشر</span>
-            </span>
-            <h2 className="font-amiri text-3xl sm:text-4xl font-bold text-gold-200">
-              {founderName}
-            </h2>
-            <span className="text-sm font-semibold text-stone-300">
-              {founderTitle}
-            </span>
-            <p className="text-xs sm:text-sm text-stone-200 leading-relaxed font-light">
-              {founderBio}
-            </p>
-            <div className="p-3.5 rounded-2xl bg-emerald-900/60 border border-gold-500/20 text-xs text-gold-300">
-              «نذرنا أنفسنا لخدمة راغبي تعلم كتاب الله وتيسير سبل الحفظ والإجازة بالسند المتصل دون أي مقابل مادي، راجين من الله القبول والإخلاص.»
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Founder: night card overlapping the header band */}
+        <Reveal className="dark relative -mt-10 overflow-hidden rounded-[32px] border border-gold-500/30 bg-emerald-900 text-mist-100 p-8 sm:p-12 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]">
+          <Rosette weight={0.8} className="turn-slow absolute -top-24 -end-24 w-80 aspect-square text-gold-500 opacity-20" />
+          <div className="relative flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <ArchPortrait name={founderName} className="bg-night!" />
+            <div className="text-center md:text-start">
+              <p className="text-sm font-semibold text-gold-300">الإشراف العلمي والتربوي العام</p>
+              <h2 className="mt-2 font-display font-bold text-4xl sm:text-5xl text-gold-400">{founderName}</h2>
+              <p className="mt-2 font-semibold text-mist-200">{founderTitle}</p>
+              <p className="mt-4 max-w-3xl text-[17px] leading-[1.9] text-mist-300">{founderBio}</p>
+              <blockquote className="mt-6 border-s-2 border-gold-500 ps-5 font-serif text-lg leading-[1.9] text-gold-200">
+                «نذرنا أنفسنا لخدمة راغبي تعلم كتاب الله وتيسير سبل الحفظ والإجازة بالسند المتصل دون أي مقابل مادي، راجين من الله القبول والإخلاص.»
+              </blockquote>
             </div>
           </div>
-        </div>
-      </FadeInUp>
+        </Reveal>
 
-      {/* 3. Mission & Vision Cards */}
-      <div className="mb-20 text-right">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-right">
-          
-          {/* Mission Card */}
-          <FadeInUp className="bg-white dark:bg-emerald-900/25 p-8 sm:p-10 rounded-3xl border border-gold-500/20 dark:border-gold-500/15 shadow-xl flex flex-col gap-6 items-start text-right group hover:border-gold-500/50 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-l from-gold-500 to-gold-300" />
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-100 to-emerald-50 dark:from-emerald-800/60 dark:to-emerald-900/80 text-emerald-800 dark:text-gold-400 flex items-center justify-center group-hover:scale-105 shadow-inner transition-all duration-300">
-              <Target className="w-8 h-8" />
-            </div>
-            <h2 className="font-amiri text-3xl font-bold text-emerald-950 dark:text-gold-200 text-right">
-              رسالتنا السامية
-            </h2>
-            <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed font-light text-right">
-              تمكين مختلف فئات المجتمع في كل مكان من الارتباط اليومي بالقرآن الكريم، وضبط التلاوة والمخارج عن طريق الحفظ والتسميع المنهجي مجاناً عن بُعد، مع بث روح التزكية والتربية الإيمانية.
-            </p>
-          </FadeInUp>
-
-          {/* Vision Card */}
-          <FadeInUp delay={0.2} className="bg-white dark:bg-emerald-900/25 p-8 sm:p-10 rounded-3xl border border-gold-500/20 dark:border-gold-500/15 shadow-xl flex flex-col gap-6 items-start text-right group hover:border-gold-500/50 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-l from-gold-500 to-gold-300" />
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-100 to-emerald-50 dark:from-emerald-800/60 dark:to-emerald-900/80 text-emerald-800 dark:text-gold-400 flex items-center justify-center group-hover:scale-105 shadow-inner transition-all duration-300">
-              <Eye className="w-8 h-8" />
-            </div>
-            <h2 className="font-amiri text-3xl font-bold text-emerald-950 dark:text-gold-200 text-right">
-              رؤيتنا المستقبلية
-            </h2>
-            <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed font-light text-right">
-              أن نكون المرجعية الرائدة عالمياً في التعليم القرآني عن بُعد، متميزين ببيئتنا الإيمانية الميسرة، وضبط السند والإجازات، وتخريج أجيال متقنة لكتاب الله عاملاً به وخادمة لأمتها.
-            </p>
-          </FadeInUp>
-
-        </div>
+        {/* Mission and vision */}
+        <section className="grid md:grid-cols-2 gap-7 py-24">
+          {MISSION.map(({ title, icon: Icon, text }, i) => (
+            <Reveal key={title} as="article" delay={i * 0.12} className="lift rounded-3xl border border-stone-300 dark:border-gold-500/15 bg-stone-50 dark:bg-emerald-900/40 p-8 sm:p-10">
+              <span className="grid place-items-center w-14 h-14 rounded-2xl bg-emerald-900 text-gold-300">
+                <Icon className="w-7 h-7" aria-hidden />
+              </span>
+              <h2 className={`mt-6 ${heading}`}>{title}</h2>
+              <p className="mt-4 text-[17px] leading-[1.9] text-stone-600 dark:text-mist-300">{text}</p>
+            </Reveal>
+          ))}
+        </section>
       </div>
 
-      {/* 4. Methodology & Pillars Section */}
-      <div className="bg-gradient-to-b from-stone-100 via-stone-50 to-stone-100 dark:from-emerald-950/40 dark:via-emerald-950/20 dark:to-emerald-950/40 py-16 rounded-3xl border border-gold-500/20 mb-20 p-8 sm:p-12">
-        <FadeInUp className="text-center max-w-2xl mx-auto mb-10">
-          <h2 className="font-amiri text-3xl sm:text-4xl font-bold text-emerald-950 dark:text-gold-100 mb-2">
-            منهجية المقرأة وركائزها
-          </h2>
-          <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400">
-            تعتمد المقرأة على ضوابط علمية رصينة تجمع بين الأصالة والتقنية الحديثة
-          </p>
-        </FadeInUp>
+      {/* Pillars in a framed leaf */}
+      <section className="bg-paper-deep dark:bg-emerald-950 border-y border-stone-300/70 dark:border-gold-500/10 py-24 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <Reveal className="text-center mb-12">
+            <h2 className={heading}>منهجية المقرأة وركائزها</h2>
+            <p className="mt-3 text-stone-600 dark:text-mist-300">ضوابط علمية رصينة تجمع بين الأصالة والتقنية الحديثة</p>
+          </Reveal>
+          <Reveal className="mushaf-frame rounded-md bg-stone-50 dark:bg-emerald-900/40 p-8 sm:p-12">
+            <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-5">
+              {PILLARS.map((p) => (
+                <li key={p} className="flex items-center gap-3.5 text-[17px] text-stone-700 dark:text-mist-200">
+                  <StarBullet className="w-3.5 h-3.5 shrink-0 text-gold-600 dark:text-gold-400" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+      </section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {pillars.map((pillar, idx) => (
-            <FadeInUp key={idx} delay={idx * 0.05} className="p-5 rounded-2xl bg-white dark:bg-emerald-900/30 border border-stone-200/60 dark:border-gold-500/10 shadow-sm flex items-center gap-3">
-              <CheckCircle2 className="w-5 h-5 text-gold-500 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-stone-800 dark:text-stone-200">{pillar}</span>
-            </FadeInUp>
+      {/* Values */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <Reveal className="text-center mb-14">
+          <h2 className={heading}>القيم التي تحكم مسيرتنا</h2>
+          <p className="mt-3 text-stone-600 dark:text-mist-300">مبادئ إيمانية ثابتة نتواصى بها ونجعلها أساساً لكل حلقة ودرس.</p>
+        </Reveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {VALUES.map(({ title, desc, icon: Icon }, i) => (
+            <Reveal key={title} as="article" delay={i * 0.08} className="lift text-center rounded-3xl border border-stone-300 dark:border-gold-500/15 bg-stone-50 dark:bg-emerald-900/40 p-7">
+              <span className="mx-auto grid place-items-center w-14 h-14 rounded-full border border-gold-500/50 text-gold-700 dark:text-gold-300">
+                <Icon className="w-6 h-6" aria-hidden />
+              </span>
+              <h3 className="mt-5 text-xl font-bold text-emerald-900 dark:text-gold-200">{title}</h3>
+              <p className="mt-3 text-[15px] leading-7 text-stone-600 dark:text-mist-300">{desc}</p>
+            </Reveal>
           ))}
         </div>
-      </div>
-
-      {/* 5. Core Values */}
-      <div className="text-right">
-        <FadeInUp className="text-center max-w-2xl mx-auto mb-14 flex flex-col items-center gap-3">
-          <h2 className="font-amiri text-3xl sm:text-4xl font-bold text-emerald-950 dark:text-gold-100">
-            القيم التي تحكم مسيرتنا
-          </h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-gold-600 via-gold-400 to-gold-600 rounded-full" />
-          <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 font-light">
-            مبادئ إيمانية ثابتة نتواصى بها ونجعلها أساساً لكل حلقة ودرس.
-          </p>
-        </FadeInUp>
-
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-right">
-          {values.map((val) => {
-            const Icon = val.icon;
-            return (
-              <StaggerItem 
-                key={val.id}
-                className="bg-white dark:bg-emerald-900/25 p-7 rounded-3xl border border-stone-200/60 dark:border-gold-500/15 shadow-lg text-center flex flex-col items-center gap-4 group hover:border-gold-500/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-100 to-emerald-50 dark:from-emerald-800/60 dark:to-emerald-900/80 text-emerald-800 dark:text-gold-400 flex items-center justify-center group-hover:scale-110 shadow-inner transition-transform duration-300">
-                  <Icon className="w-7 h-7" />
-                </div>
-                <h3 className="font-amiri text-xl font-bold text-emerald-950 dark:text-gold-200">
-                  {val.title}
-                </h3>
-                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed font-light">
-                  {val.desc}
-                </p>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
-      </div>
-
+      </section>
     </div>
   );
 };
