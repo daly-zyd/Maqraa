@@ -34,7 +34,11 @@
 
 ## Projet مقرأة قرآن — Architecture Rules
 
-11. SCOPE — STATIC FOR NOW: This project is currently a **static-content React front-end: no database, no backend, no API calls**. All data (programmes, événements, contenu coranique, tazkiya) MUST live in local JSON/JS files under `src/data/`. This is not permanent — a backend/BDD MAY be added later — so the data-access layer must be isolated behind a single interface (e.g. `src/data/index.ts` or per-domain data modules) so that swapping local imports for real API calls later touches only that layer, never page/component code.
+11. SCOPE — PUBLIC SITE + AUTHENTICATED SPACE: The project has two kinds of data.
+   * **Public editorial content** (programmes, événements, contenu coranique, tazkiya, versets) stays in local JSON/TS files under `src/data/`, read through per-domain data modules. Verses/hadiths keep the `approved` flag: nothing unapproved is published.
+   * **Account and operational data** (auth, `/me/` permissions, planning, people, reports, audit) comes from the Django REST API in `backend/` (`/api/v1`). Pages and components never call `axios`/`fetch` directly: they go through `src/services/<domain>Service.ts`, which use the single Axios client `src/lib/apiClient.ts` (JWT, silent refresh, Arabic error messages via `apiErrorMessage`).
+   * **Mock API**: until a real API is configured, MSW handlers in `src/mocks/` stand in for the backend (active in dev without `VITE_API_URL`, or with `VITE_USE_MOCK=true`; never in a production build). Every new endpoint used by a service MUST get a matching mock handler with the same contract as the Django view.
+   * Access control is driven by the capabilities returned by `GET /me/`, never by role names.
 
 12. BILINGUAL / RTL REQUIREMENT: Every page and component MUST support Arabic (RTL) and French (LTR) via `react-i18next`. Never hardcode `dir="rtl"`/`"ltr"` at the component level — direction must be derived globally from the active language (set on `<html>` or a top-level layout wrapper).
 
@@ -44,10 +48,15 @@
 
 15. FRONTEND STRUCTURE:
 src/
-data/           # JSON/JS static content (programmes, evenements, coran, tazkiya)
+data/           # JSON/JS static content (programmes, evenements, coran, tazkiya, verses)
 components/     # Composants réutilisables (Card, SectionFilter, LanguageSwitcher, etc.)
-pages/          # Une page par route (Accueil, Programmes, Coran, Contact, etc.)
+features/       # État et UI par domaine (auth, theme…) : contexts, guards, types
+services/       # Un module par domaine API (authService, planningService…) — seul point d'appel HTTP
+lib/            # apiClient (Axios), tokenStore, utilitaires transverses
+mocks/          # Handlers MSW reproduisant le contrat de l'API Django
+pages/          # Une page par route (Accueil, Programmes, Coran, Contact, Login, Dashboard, etc.)
 i18n/           # Fichiers de traduction AR/FR
 routes/         # Config react-router-dom
+backend/          # API Django (DRF) — voir backend/README.md
 
-16. NO PREMATURE BACKEND COUPLING: Do not create `services/` or `api/` folders while the project stays static. When a backend/BDD is eventually added, data-fetching logic must be introduced behind the same interface used to read local JSON (rule 11), so page components require zero changes.
+16. LAYERED DATA ACCESS: The only allowed call chain is `page/component → service → apiClient`. No `api/` folder, no second HTTP client, no HTTP calls in `features/` or `pages/`. Services return typed domain objects (types in `features/<domain>/types.ts`), not Axios responses. Public content in `src/data/` must not be moved to the API without an explicit decision; if it is, only its data module changes, never page code. The backend keeps its own rules (tests, ruff, import-linter must pass).
