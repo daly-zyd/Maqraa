@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { getTeachers, getSupervisors, getTechSupport } from "../data";
 import type { Teacher, Supervisor, TechSupportMember, TeacherCategory } from "../data";
 import { IslamicAvatar } from "../components/Avatars";
@@ -26,41 +26,23 @@ export const Teachers: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<FilterTab>("all");
   const [loading, setLoading] = useState(true);
 
-  const fetchData = useCallback(async () => {
-    const [t, s, tech] = await Promise.all([
-      getTeachers(),
-      getSupervisors(),
-      getTechSupport(),
-    ]);
-    setTeachers(t);
-    setSupervisors(s);
-    setTechSupport(tech);
-    setLoading(false);
-  }, []);
-
   useEffect(() => {
     let mounted = true;
-    Promise.all([getTeachers(), getSupervisors(), getTechSupport()]).then(
-      ([t, s, tech]) => {
-        if (mounted) {
-          setTeachers(t);
-          setSupervisors(s);
-          setTechSupport(tech);
-          setLoading(false);
-        }
-      }
-    );
-
-    const handleUpdate = () => {
-      fetchData();
+    const load = async () => {
+      const [t, s, tech] = await Promise.all([getTeachers(), getSupervisors(), getTechSupport()]);
+      if (!mounted) return;
+      setTeachers(t);
+      setSupervisors(s);
+      setTechSupport(tech);
+      setLoading(false);
     };
-
-    window.addEventListener("maqraa_data_updated", handleUpdate);
+    load();
+    window.addEventListener("maqraa_data_updated", load);
     return () => {
       mounted = false;
-      window.removeEventListener("maqraa_data_updated", handleUpdate);
+      window.removeEventListener("maqraa_data_updated", load);
     };
-  }, [fetchData]);
+  }, []);
 
   const menSheikhsCount = teachers.filter((t) => t.category === "men_sheikhs").length;
   const femaleTeachersCount = teachers.filter((t) => t.category === "female_teachers").length;
