@@ -97,5 +97,38 @@
     "rights": "Tous droits réservés.",
     "desc": "Institut d'apprentissage du Coran et de développement spirituel.",
     "quick_links": "Liens rapides"
+  },
+  "schedule": {
+    "title": "Planning des séances",
+    "subtitle_all": "Les séances de la maqraa, à l'heure de Tunis et de La Mecque",
+    "subtitle_own": "Vos séances, à l'heure de Tunis et de La Mecque",
+    "back": "Tableau de bord",
+    "maqraa": "Maqraa",
+    "prev_week": "Semaine précédente",
+    "next_week": "Semaine suivante",
+    "this_week": "Cette semaine",
+    "today": "Aujourd'hui",
+    "tunis": "Tunis",
+    "mecca": "La Mecque",
+    "sheikh": "Cheikh",
+    "supervisor": "Superviseur",
+    "unassigned": "Non attribué",
+    "no_sessions": "Aucune séance",
+    "no_maqraa": "Aucune maqraa ne vous donne accès au planning.",
+    "loading": "Chargement du planning…",
+    "retry": "Réessayer",
+    "awaiting_report": "Compte rendu attendu",
+    "status": {
+      "scheduled": "Planifiée",
+      "awaiting_confirmation": "En attente de confirmation",
+      "confirmed": "Confirmée",
+      "declined": "Déclinée par le cheikh",
+      "substitution_open": "Remplaçant recherché",
+      "room_open": "En cours",
+      "closed_out": "Clôturée",
+      "reported": "Compte rendu publié",
+      "missed": "Manquée",
+      "cancelled": "Annulée"
+    }
   }
 }

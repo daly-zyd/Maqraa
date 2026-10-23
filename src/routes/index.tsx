@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Home from '../pages/Home';
 import { RequireAuth } from '../features/auth/RequireAuth';
+import { CAP } from '../features/auth/permissions';
 import { ScrollToTop } from '../components/ScrollToTop';
 
 const About = lazy(() => import('../pages/About'));
@@ -17,6 +18,7 @@ const Styleguide = lazy(() => import('../pages/Styleguide'));
 const Login = lazy(() => import('../pages/Login'));
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Profile = lazy(() => import('../pages/Profile'));
+const Schedule = lazy(() => import('../pages/Schedule'));
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -40,6 +42,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="/styleguide" element={<Styleguide />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+          <Route path="/dashboard/schedule" element={<RequireAuth capability={CAP.scheduleViewOwn}><Schedule /></RequireAuth>} />
           <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
           {/* Catch-all fallback */}
           <Route path="*" element={<Home />} />

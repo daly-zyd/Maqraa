@@ -1,12 +1,14 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import ar from './ar.json';
+import fr from './fr.json';
 
 i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ar: { translation: ar }
+      ar: { translation: ar },
+      fr: { translation: fr }
     },
     lng: 'ar',
     fallbackLng: 'ar',
@@ -15,14 +17,14 @@ i18n
     }
   });
 
-// Set HTML attributes globally for Arabic and RTL
+// Direction is derived from the active language, once, on <html> (never per component)
 const updateHtmlAttributes = (lng: string) => {
   document.documentElement.lang = lng;
-  document.documentElement.dir = 'rtl';
+  document.documentElement.dir = i18n.dir(lng);
 };
 
 // Initial set
-updateHtmlAttributes('ar');
+updateHtmlAttributes(i18n.language);
 
 // Listen for language changes
 i18n.on('languageChanged', (lng) => {
@@ -30,4 +32,3 @@ i18n.on('languageChanged', (lng) => {
 });
 
 export default i18n;
-
