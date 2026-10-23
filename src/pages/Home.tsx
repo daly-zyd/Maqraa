@@ -1,30 +1,73 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ChevronLeft, MessageCircle, ShieldCheck } from 'lucide-react';
 import { getPrograms, getSettings, getTeachers } from '../data';
 import type { Program, MaqraaSettings, Teacher } from '../data';
 import { Card } from '../components/Card';
-import { IslamicAvatar } from '../components/Avatars';
-import {
-  Sparkles,
-  BookOpen,
-  Users,
-  MessageCircle,
-  ShieldCheck,
-  CheckCircle2,
-  ExternalLink,
-  ChevronLeft
-} from 'lucide-react';
-import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animations';
-import { StarMark } from '../components/StarMark';
+import { Reveal } from '../components/Reveal';
+import { Rosette, StarBullet } from '../components/Rosette';
 import { VersePanel } from '../components/VersePanel';
 import { getPublishableVerses } from '../data/verses';
 import logoImg from '../assets/logo-brand.webp';
+
+const STATS = [
+  { value: '+500', label: 'طالب وطالبة ملتحقين' },
+  { value: '+25', label: 'شيخ ومعلمة مجازين بالسند' },
+  { value: '100%', label: 'مجانية الدراسة والالتحاق' },
+  { value: '10', label: 'برامج قرآنية متخصصة' }
+];
+
+const STEPS = [
+  { n: '١', title: 'انضم لمجموعة واتساب', text: 'المجموعة المخصصة لقسمك، لتصلك الإعلانات ومواعيد الحلقات.' },
+  { n: '٢', title: 'مفتوحة لجميع المستويات', text: 'لا اختبار ولا شروط، من المبتدئ حتى الخاتم.' },
+  { n: '٣', title: 'ابدأ الحلقات مجاناً', text: 'حضور وتسميع ومراجعة الأحكام بمتابعة مستمرة.' }
+];
+
+const SECTIONS = [
+  {
+    id: 'men',
+    eyebrow: 'قسم الرجال',
+    title: 'حلقات المشايخ الفضلاء',
+    text: 'حلقات تفاعلية للرجال والشباب لحفظ كتاب الله وضبط أحكام التجويد والإجازة بالسند المتصل إلى رسول الله ﷺ.',
+    points: ['إشراف مباشر من مشايخ مقرئين مجازين', 'مواعيد صباحية ومسائية مرنة', 'تعليم مجاني لوجه الله تعالى'],
+    cta: 'انضم إلى مجموعة الرجال',
+    card: 'bg-emerald-900 border-emerald-800 text-mist-100',
+    accent: 'text-gold-300',
+    title_: 'text-gold-400',
+    body: 'text-mist-300',
+    button: 'bg-gold-500 hover:bg-gold-400 text-emerald-950',
+    turn: 'turn-slow'
+  },
+  {
+    id: 'women',
+    eyebrow: 'قسم النساء',
+    title: 'بإشراف المعلمات الفضليات',
+    text: 'حلقات نسائية مستقلة تماماً تشرف عليها معلمات مجازات، لربات البيوت والطالبات والمبتدئات في التلاوة والحفظ.',
+    points: ['فصل تام وخصوصية مطلقة', 'تسميع مباشر من معلمات متخصصات', 'بيئة إيمانية محفزة لجميع الأعمار'],
+    cta: 'انضمي إلى مجموعة النساء',
+    card: 'bg-oxblood-900 border-oxblood-800 text-oxblood-50',
+    accent: 'text-oxblood-200',
+    title_: 'text-oxblood-200',
+    body: 'text-oxblood-100/85',
+    button: 'bg-oxblood-300 hover:bg-oxblood-200 text-oxblood-900',
+    turn: 'turn-back-slow'
+  }
+] as const;
+
+/** First letter of a name once honorifics are set aside: the arch portraits show it until photos exist. */
+const HONORIFICS = new Set(['فضيلة', 'الشيخ', 'الشيخة', 'الأستاذ', 'الأستاذة', 'المعلمة']);
+const initialOf = (name: string) => name.split(/\s+/).find((w) => !HONORIFICS.has(w))?.charAt(0) ?? name.charAt(0);
+
+const sectionHeading = 'font-display font-bold text-5xl sm:text-[56px] leading-tight text-emerald-900 dark:text-gold-300';
+const eyebrow = 'text-sm font-semibold tracking-[0.08em] text-gold-700 dark:text-gold-400';
 
 export const Home: React.FC = () => {
   const [featuredPrograms, setFeaturedPrograms] = useState<Program[]>([]);
   const [settings, setSettings] = useState<MaqraaSettings | null>(null);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let mounted = true;
@@ -44,427 +87,256 @@ export const Home: React.FC = () => {
     };
   }, []);
 
-  const stats = [
-    { id: 1, name: 'طالب وطالبة ملتحقين', value: '+500' },
-    { id: 2, name: 'شيخ ومعلمة مجازين بالسند', value: '+25' },
-    { id: 3, name: 'تكلفة الدراسة والالتحاق', value: 'مجانية 100%' },
-    { id: 4, name: 'برامج قرآنية متخصصة', value: '10' }
-  ];
+  // "Join" buttons elsewhere navigate here with { scrollTo: 'join' } (a #hash would be a route under HashRouter)
+  const scrollTarget = (location.state as { scrollTo?: string } | null)?.scrollTo;
+  useEffect(() => {
+    if (!scrollTarget) return;
+    document.getElementById(scrollTarget)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    navigate('.', { replace: true, state: null });
+  }, [scrollTarget, navigate]);
+
+  const scrollToJoin = () => document.getElementById('join')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   const featuredVerse = getPublishableVerses().find((v) => v.kind === 'ayah');
-
-  const menWhatsappUrl = settings?.whatsappMenUrl || 'https://chat.whatsapp.com/G4g5nZL24LsJ7wjUIt6pgV';
-  const womenWhatsappUrl = settings?.whatsappWomenUrl || 'https://chat.whatsapp.com/Iz6Txl9YYFFKSAacjm4Oyx';
+  const whatsapp = {
+    men: settings?.whatsappMenUrl || 'https://chat.whatsapp.com/G4g5nZL24LsJ7wjUIt6pgV',
+    women: settings?.whatsappWomenUrl || 'https://chat.whatsapp.com/Iz6Txl9YYFFKSAacjm4Oyx'
+  };
   const founderName = settings?.founderName || 'فضيلة الشيخ شريف سعد';
-  const founderTitle = settings?.founderTitle || 'مؤسس المقرأة والمشرف العام عليها';
-  const founderBio = settings?.founderBio || 'مقرئ مجاز بالقراءات العشر الصغرى والكبرى بالسند المتصل، صاحب مسيرة علمية حافلة في خدمة كتاب الله وتعليم النشء وتخريج الحفاظ المتقنين.';
 
   return (
-    <div className="relative overflow-hidden min-h-screen text-right">
-      
-      {/* 1. Hero */}
-      <section className="relative bg-emerald-950 text-white border-b border-gold-500/50 overflow-hidden">
-        <div aria-hidden className="absolute -inset-[144px] islamic-arabesque-bg opacity-80 drift-slow" />
-        <div aria-hidden className="absolute inset-0 glow-breathe bg-[radial-gradient(ellipse_at_28%_45%,rgba(191,149,52,0.22),transparent_55%)]" />
+    <div className="relative overflow-hidden">
+      {/* ===== Hero (slides under the transparent header: 76px = the Navbar's h-[76px]) ===== */}
+      <section className="dark relative -mt-[76px] pt-[76px] min-h-[min(100svh,960px)] overflow-hidden bg-night text-mist-100 bg-[radial-gradient(120%_80%_at_20%_30%,var(--color-emerald-800)_0%,var(--color-night)_60%)]">
+        <div aria-hidden className="absolute -inset-20 islamic-arabesque-bg opacity-90 drift-slow" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[1.15fr_0.85fr] items-center gap-10 lg:gap-6">
-          {/* Words */}
-          <div className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-start gap-6">
-            <p className="flex items-center gap-3 text-sm sm:text-base font-semibold text-gold-300">
-              <span>عن بُعد</span>
-              <StarMark className="w-3.5 h-3.5" />
-              <span>مجانية 100%</span>
-              <StarMark className="w-3.5 h-3.5" />
-              <span>للرجال والنساء</span>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-40 lg:pt-12 flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-12">
+          <div className="flex-1 min-w-0 text-center lg:text-start">
+            <p className="rise rise-1 flex flex-wrap justify-center lg:justify-start gap-2.5 mb-7">
+              <span className="px-4 py-2 rounded-full text-sm font-semibold text-gold-300 bg-gold-500/12 border border-gold-500/35">مجانية 100%</span>
+              <span className="px-4 py-2 rounded-full text-sm text-mist-200 border border-mist-100/20">عن بُعد من كل مكان</span>
+              <span className="px-4 py-2 rounded-full text-sm text-mist-200 border border-mist-100/20">حلقات مستقلة للرجال والنساء</span>
             </p>
-
-            <h1 className="font-thuluth text-gilded text-6xl sm:text-7xl xl:text-8xl leading-[1.5] select-none">
+            <h1 className="rise rise-2 font-display font-bold text-[clamp(4.5rem,10vw,9.75rem)] leading-[1.05] text-gold-400 [text-shadow:0_0_60px_rgba(212,175,106,0.25)]">
               بالقرآن نحيا
             </h1>
-
-            <p className="max-w-xl text-lg sm:text-xl leading-9 text-stone-200">
-              تعلّم القرآن الكريم وحفظه وتجويده وتدبّر معانيه مع نخبة من المشايخ والأساتذة المجازين بالسند المتصل،
-              في حلقات مستقلة للرجال والنساء.
+            <p className="rise rise-3 mt-6 mx-auto lg:mx-0 max-w-xl text-lg sm:text-[21px] leading-[1.9] font-light text-mist-300">
+              تعلّم القرآن الكريم وحفظه وتجويده وتدبّر معانيه مع نخبة من المشايخ والمعلمات المجازين بالسند المتصل.
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mt-2">
-              <a
-                href="#online-learning"
-                className="inline-flex items-center justify-center gap-2.5 px-9 py-3.5 rounded-full font-bold text-emerald-950 bg-gradient-to-b from-gold-300 to-gold-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_10px_24px_-8px_rgba(0,0,0,0.6)] hover:from-gold-200 hover:to-gold-400 transition-colors"
+            <div className="rise rise-4 mt-10 flex flex-col sm:flex-row justify-center lg:justify-start gap-3.5">
+              <button
+                type="button"
+                onClick={scrollToJoin}
+                className="btn-glow relative overflow-hidden inline-flex items-center justify-center gap-2.5 h-14 px-8 rounded-full bg-gold-500 text-emerald-950 text-[17px] font-bold"
               >
-                <MessageCircle className="w-5 h-5" aria-hidden />
-                انضم إلى المقرأة مجاناً
-              </a>
+                <span aria-hidden className="sheen absolute inset-0" />
+                <span className="relative">انضم إلى المقرأة مجاناً</span>
+                <ChevronLeft className="relative w-5 h-5" aria-hidden />
+              </button>
               <Link
                 to="/programs"
-                className="inline-flex items-center justify-center gap-2.5 px-9 py-3.5 rounded-full font-bold text-gold-200 border border-gold-400/70 hover:bg-gold-400/10 transition-colors"
+                className="inline-flex items-center justify-center h-14 px-8 rounded-full border border-mist-100/30 text-[17px] font-semibold text-mist-100 hover:border-gold-500 hover:text-gold-200 transition-colors"
               >
-                <BookOpen className="w-5 h-5" aria-hidden />
                 البرامج التعليمية
               </Link>
             </div>
-
-            <p className="text-[15px] text-stone-300 mt-1">
-              تحت إشراف <strong className="text-gold-300 font-bold">{founderName}</strong>
-            </p>
+            <Link
+              to="/about"
+              className="rise rise-5 mt-9 inline-flex items-center gap-3 text-[15px] text-mist-400 hover:text-gold-200 transition-colors"
+            >
+              <span aria-hidden className="w-10 h-px bg-gold-500" />
+              تحت إشراف {founderName}
+            </Link>
           </div>
 
-          {/* Emblem: the logo sits inside a star ring that draws itself once on load */}
-          <div className="order-1 lg:order-2 relative mx-auto w-[min(80vw,440px)] lg:w-full max-w-[520px] aspect-square">
-            <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full text-gold-400" aria-hidden fill="none" stroke="currentColor">
-              <g className="turn-slow origin-center" strokeWidth="1">
-                <circle cx="200" cy="200" r="196" strokeOpacity="0.35" strokeDasharray="2 7" />
-              </g>
-              <g strokeWidth="1.6" strokeOpacity="0.75">
-                <rect pathLength={1} className="ring-draw" x="70" y="70" width="260" height="260" />
-                <rect pathLength={1} className="ring-draw" x="70" y="70" width="260" height="260" transform="rotate(45 200 200)" />
-              </g>
-              <circle cx="200" cy="200" r="168" strokeOpacity="0.3" />
-            </svg>
-            <img
-              src={logoImg}
-              alt="شعار مقرأة بالقرآن نحيا"
-              width={420}
-              height={420}
-              fetchPriority="high"
-              className="absolute inset-[9%] w-[82%] h-[82%] object-contain drop-shadow-[0_18px_30px_rgba(0,0,0,0.55)]"
-            />
+          {/* Rosette around the logo medallion */}
+          <div className="relative flex-1 min-w-0 w-full grid place-items-center h-[min(86vw,620px)]">
+            <div aria-hidden className="glow-breathe absolute w-[84%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(212,175,106,0.28),rgba(212,175,106,0)_65%)]" />
+            <Rosette className="turn-slow absolute w-full max-w-[620px] aspect-square text-gold-500" />
+            <Rosette variant="star" weight={0.6} className="turn-back-slow absolute w-[64%] max-w-[400px] aspect-square text-gold-300/60" />
+            <div className="relative w-[40%] max-w-[250px] aspect-square rounded-full p-2 bg-emerald-900 shadow-[0_0_0_1px_rgba(212,175,106,0.6),0_0_0_10px_rgba(212,175,106,0.06),0_40px_90px_-20px_rgba(0,0,0,0.7)]">
+              <img
+                src={logoImg}
+                alt="شعار مقرأة بالقرآن نحيا"
+                width={250}
+                height={250}
+                fetchPriority="high"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
+            <span aria-hidden className="twinkle absolute top-[12%] left-[16%] w-1 h-1 rounded-full bg-gold-50" />
+            <span aria-hidden className="twinkle absolute bottom-[18%] right-[10%] w-[3px] h-[3px] rounded-full bg-gold-50 [animation-delay:1.3s]" />
+            <span aria-hidden className="twinkle absolute top-[32%] right-[5%] w-[5px] h-[5px] rounded-full bg-gold-300 [animation-delay:2.2s]" />
           </div>
         </div>
       </section>
 
-      {/* 2. Stats band: figures divided by gilt rules, no cards */}
-      <section className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10">
-        <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 rounded-[28px] bg-paper dark:bg-emerald-950 mushaf-frame shadow-[0_24px_48px_-24px_rgba(4,24,18,0.55)]">
-          {stats.map((stat, i) => (
-            <StaggerItem
-              key={stat.id}
-              className={`py-7 px-4 text-center ${i % 2 === 1 ? 'border-s' : ''} ${i >= 2 ? 'border-t lg:border-t-0' : ''} ${i > 0 ? 'lg:border-s' : ''} border-gold-600/25`}
+      {/* ===== Stats, overlapping the hero ===== */}
+      <section className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 -mt-24">
+        <Reveal className="grid grid-cols-2 lg:grid-cols-4 rounded-[28px] border border-stone-300 dark:border-gold-500/20 bg-stone-100 dark:bg-emerald-900 px-4 py-8 sm:py-9 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)]">
+          {STATS.map((s, i) => (
+            <div
+              key={s.label}
+              className={`px-3 py-3 text-center ${i % 2 === 1 ? 'border-s' : ''} ${i >= 2 ? 'border-t lg:border-t-0' : ''} ${i > 0 ? 'lg:border-s' : ''} border-stone-300/80 dark:border-gold-500/15`}
             >
-              <div className="font-amiri text-3xl sm:text-4xl font-bold text-emerald-800 dark:text-gold-300">{stat.value}</div>
-              <div className="mt-1 text-sm sm:text-[15px] text-stone-600 dark:text-stone-300">{stat.name}</div>
-            </StaggerItem>
+              <p className="font-serif font-bold text-4xl sm:text-[52px] leading-none text-emerald-900 dark:text-gold-300">{s.value}</p>
+              <p className="mt-2.5 text-sm sm:text-[15px] text-stone-600 dark:text-mist-300">{s.label}</p>
+            </div>
           ))}
-        </StaggerContainer>
+        </Reveal>
       </section>
 
-      {/* Verse of the day: only approved entries are public (see data/verses.ts) */}
+      {/* ===== Verse: only approved entries are public (see data/verses.ts) ===== */}
       {featuredVerse && (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-16">
-          <FadeInUp>
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-20">
+          <Reveal>
             <VersePanel verse={featuredVerse} />
-          </FadeInUp>
+          </Reveal>
         </section>
       )}
 
-      {/* 3. Founder Spotlight Section (فضيلة الشيخ شريف) */}
-      <section className="py-10 sm:py-12 bg-amber-500/5 dark:bg-emerald-950/20 border-y border-gold-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeInUp className="bg-white/85 dark:bg-emerald-900/30 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-gold-500/30 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-l from-gold-600 via-gold-400 to-gold-300" />
-            
-            {/* Founder Avatar */}
-            <div className="flex-shrink-0 flex flex-col items-center gap-2.5">
-              <IslamicAvatar role="sheikh" gender="male" size="xl" className="shadow-xl" />
-              <span className="text-[11px] font-bold px-3 py-0.5 rounded-full bg-gold-500/20 text-gold-700 dark:text-gold-300 border border-gold-500/30">
-                مؤسس المقرأة
-              </span>
-            </div>
-
-            {/* Founder Info */}
-            <div className="flex flex-col gap-3 text-right flex-grow">
-              <div className="inline-flex items-center gap-2 text-xs font-bold text-gold-600 dark:text-gold-400">
-                <Sparkles className="w-4 h-4" />
-                <span>الإشراف العلمي والتربوي العام</span>
-              </div>
-              <h2 className="font-amiri text-2xl sm:text-3xl font-bold text-emerald-950 dark:text-gold-100 leading-snug">
-                {founderName}
-              </h2>
-              <span className="text-xs sm:text-sm font-bold text-emerald-800 dark:text-gold-300">
-                {founderTitle}
-              </span>
-              <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed font-light">
-                {founderBio}
-              </p>
-              <div className="pt-1 flex flex-wrap gap-4 items-center">
-                <div className="flex items-center gap-2 text-xs font-semibold text-stone-700 dark:text-stone-200">
-                  <CheckCircle2 className="w-4 h-4 text-gold-500" />
-                  <span>إسناد متصل إلى النبي ﷺ</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-stone-700 dark:text-stone-200">
-                  <CheckCircle2 className="w-4 h-4 text-gold-500" />
-                  <span>إشراف وتوجيه لكافة حلقات الرجال والنساء</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex-shrink-0">
-              <Link
-                to="/about"
-                className="px-5 py-2.5 rounded-2xl font-bold text-xs text-white dark:text-emerald-950 bg-emerald-800 dark:bg-gold-500 hover:opacity-90 transition-all flex items-center gap-1.5"
-              >
-                <span>اقرأ المزيد عن المقرأة</span>
-                <ChevronLeft className="w-4 h-4" />
-              </Link>
-            </div>
-          </FadeInUp>
-        </div>
-      </section>
-
-      {/* 4. Complete Online Learning Section (WhatsApp Groups & Registration) */}
-      <section id="online-learning" className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeInUp className="text-center max-w-3xl mx-auto mb-10 flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-gold-400 font-bold text-xs sm:text-sm mb-3 shadow-sm">
-            <Sparkles className="w-4 h-4 text-gold-500" />
-            <span>تعليم قرآني عن بُعد • متاح لجميع دول العالم مجاناً</span>
-          </div>
-          <h2 className="font-amiri text-3xl sm:text-4xl font-bold text-emerald-950 dark:text-gold-100 mb-3">
-            نظام التعلّم عن بُعد
-          </h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-gold-600 via-gold-400 to-gold-600 mx-auto rounded-full mb-4" />
-          <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300 font-light leading-relaxed">
-            تتيح المقرأة حفظ القرآن الكريم وضبط تلاوته من أي مكان في العالم عبر مجموعات WhatsApp المخصصة، مع فصل تام بين الرجال والنساء.
+      {/* ===== Men / women ===== */}
+      <section id="join" className="scroll-mt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-28">
+        <Reveal className="text-center mb-14">
+          <p className={eyebrow}>نظام التعلّم عن بُعد</p>
+          <h2 className={`mt-2.5 ${sectionHeading}`}>قسمان مستقلان، منهج واحد</h2>
+          <p className="mt-4 mx-auto max-w-2xl text-lg leading-[1.9] text-stone-600 dark:text-mist-300">
+            حفظ القرآن الكريم وضبط تلاوته من أي مكان في العالم عبر مجموعات واتساب مخصصة، مع فصل تام بين الرجال والنساء.
           </p>
-        </FadeInUp>
+        </Reveal>
 
-        {/* 2 Main Cards: Men WhatsApp Group + Women WhatsApp Group */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-          
-          {/* 1. Men WhatsApp Card */}
-          <FadeInUp className="bg-white dark:bg-emerald-900/25 p-7 sm:p-9 rounded-3xl border border-stone-200/70 dark:border-gold-500/20 shadow-xl relative overflow-hidden flex flex-col justify-between gap-6">
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-l from-emerald-600 to-emerald-400" />
-            
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-3.5">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-800/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shadow-inner flex-shrink-0">
-                  <Users className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="font-amiri text-2xl sm:text-3xl font-bold text-emerald-950 dark:text-gold-200">
-                    قسم الرجال
-                  </h3>
-                  <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">حلقات مخصصة بإشراف المشايخ الفضلاء</span>
-                </div>
-              </div>
-
-              <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed font-light">
-                حلقات قرآنية تفاعلية للرجال والشباب لحفظ كتاب الله وضبط أحكام التجويد والإجازة بالسند المتصل إلى رسول الله ﷺ.
-              </p>
-
-              <ul className="space-y-2 text-xs text-stone-600 dark:text-stone-300">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-gold-400 flex-shrink-0" />
-                  <span>إشراف مباشر من نخبة من المشايخ المقرئين المجازين</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-gold-400 flex-shrink-0" />
-                  <span>مرونة في المواعيد الصباحية والمسائية</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-gold-400 flex-shrink-0" />
-                  <span>تعليم مجاني 100% لوجه الله تعالى</span>
-                </li>
+        <div className="grid md:grid-cols-2 gap-7">
+          {SECTIONS.map((s, i) => (
+            <Reveal key={s.id} delay={i * 0.12} as="article" className={`lift arch relative overflow-hidden border px-8 sm:px-11 pt-28 pb-11 ${s.card}`}>
+              <Rosette variant="star" weight={1} className={`${s.turn} absolute -top-32 left-1/2 -ml-[150px] w-[300px] aspect-square opacity-25 ${s.accent}`} />
+              <p className={`relative text-center text-sm font-semibold ${s.accent}`}>{s.eyebrow}</p>
+              <h3 className={`relative mt-2 text-center font-display text-4xl sm:text-[40px] ${s.title_}`}>{s.title}</h3>
+              <p className={`mt-5 text-center text-[17px] leading-[1.9] ${s.body}`}>{s.text}</p>
+              <ul className="mt-7 flex flex-col gap-3.5 text-base">
+                {s.points.map((pt) => (
+                  <li key={pt} className="flex items-center gap-3">
+                    <StarBullet className={`w-3.5 h-3.5 shrink-0 ${s.accent}`} />
+                    {pt}
+                  </li>
+                ))}
               </ul>
-            </div>
-
-            <a
-              href={menWhatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-3.5 px-6 rounded-2xl font-bold text-center text-sm text-white bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-700 shadow-lg hover:scale-102 transition-all flex items-center justify-center gap-2.5"
-            >
-              <MessageCircle className="w-5 h-5" />
-              <span>انضم إلى مجموعة الرجال عبر WhatsApp</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </FadeInUp>
-
-          {/* 2. Women WhatsApp Card */}
-          <FadeInUp delay={0.1} className="bg-white dark:bg-emerald-900/25 p-7 sm:p-9 rounded-3xl border border-stone-200/70 dark:border-gold-500/20 shadow-xl relative overflow-hidden flex flex-col justify-between gap-6">
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-l from-lapis-600 to-lapis-400" />
-            
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-3.5">
-                <div className="w-14 h-14 rounded-2xl bg-lapis-100 dark:bg-lapis-900/50 text-lapis-700 dark:text-lapis-300 flex items-center justify-center shadow-inner flex-shrink-0">
-                  <Users className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="font-amiri text-2xl sm:text-3xl font-bold text-emerald-950 dark:text-gold-200">
-                    قسم النساء
-                  </h3>
-                  <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">خصوصية تامة بإشراف المعلمات الفضليات</span>
-                </div>
-              </div>
-
-              <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed font-light">
-                حلقات نسائية مستقلة تماماً تشرف عليها معلمات مجازات، مخصصة لربات البيوت، الطالبات، والأخوات المبتدئات في التلاوة والحفظ.
-              </p>
-
-              <ul className="space-y-2 text-xs text-stone-600 dark:text-stone-300">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-lapis-600 dark:text-gold-400 flex-shrink-0" />
-                  <span>فصل تام وخصوصية مطلقة للأخوات 100%</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-lapis-600 dark:text-gold-400 flex-shrink-0" />
-                  <span>إشراف وتسميع مباشر من معلمات متخصصات</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-lapis-600 dark:text-gold-400 flex-shrink-0" />
-                  <span>بيئة إيمانية تربوية محفزة لجميع الأعمار</span>
-                </li>
-              </ul>
-            </div>
-
-            <a
-              href={womenWhatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-3.5 px-6 rounded-2xl font-bold text-center text-sm text-white bg-gradient-to-l from-lapis-800 to-lapis-700 hover:from-lapis-700 hover:to-lapis-600 shadow-lg hover:scale-102 transition-all flex items-center justify-center gap-2.5"
-            >
-              <MessageCircle className="w-5 h-5" />
-              <span>انضمي إلى مجموعة النساء عبر WhatsApp</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </FadeInUp>
-        </div>
-
-        {/* Privacy Note */}
-        <FadeInUp delay={0.15} className="mb-10 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-800/20 text-xs text-stone-700 dark:text-stone-300 flex items-center gap-3 justify-center text-center">
-          <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-gold-400 flex-shrink-0" />
-          <span>نلتزم بالخصوصية والآداب الإسلامية التامة، ولا يُسمح باختلاط المجموعات مطلقاً.</span>
-        </FadeInUp>
-
-        {/* 3 Simple Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <FadeInUp delay={0.2} className="bg-white dark:bg-emerald-900/20 p-5 rounded-2xl border border-stone-200/60 dark:border-gold-500/10 text-center flex flex-col items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-emerald-700 text-white font-bold text-sm flex items-center justify-center shadow-md">1</span>
-            <h4 className="font-bold text-emerald-950 dark:text-gold-200 text-sm">الانضمام لمجموعة WhatsApp</h4>
-            <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed font-light">انضم للمجموعة المخصصة لجنسك لتلقي الإعلانات ومواعيد الحلقات.</p>
-          </FadeInUp>
-
-          <FadeInUp delay={0.25} className="bg-white dark:bg-emerald-900/20 p-5 rounded-2xl border border-stone-200/60 dark:border-gold-500/10 text-center flex flex-col items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-gold-600 text-white font-bold text-sm flex items-center justify-center shadow-md">2</span>
-            <h4 className="font-bold text-emerald-950 dark:text-gold-200 text-sm">مفتوحة لجميع المستويات</h4>
-            <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed font-light">لا توجد اختبارات أو شروط، المقرأة ترحب بالجميع من المبتدئين حتى الخاتمين.</p>
-          </FadeInUp>
-
-          <FadeInUp delay={0.3} className="bg-white dark:bg-emerald-900/20 p-5 rounded-2xl border border-stone-200/60 dark:border-gold-500/10 text-center flex flex-col items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-emerald-700 text-white font-bold text-sm flex items-center justify-center shadow-md">3</span>
-            <h4 className="font-bold text-emerald-950 dark:text-gold-200 text-sm">بدء الحلقات مجاناً 100%</h4>
-            <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed font-light">حضور الحلقات وتسميع القرآن ومراجعة الأحكام بمتابعة مستمرة.</p>
-          </FadeInUp>
-        </div>
-      </section>
-
-      {/* 5. Teachers & Staff Preview */}
-      <section className="py-10 sm:py-12 bg-stone-100/50 dark:bg-emerald-950/20 border-y border-gold-500/15">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeInUp className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
-            <div className="flex flex-col gap-1.5">
-              <h2 className="font-amiri text-2xl sm:text-3xl font-bold text-emerald-950 dark:text-gold-100">
-                المشايخ وفريق العمل
-              </h2>
-              <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 font-light max-w-xl">
-                نخبة من المقرئين والمعلمات أصحاب السند المتصل وفريق الإشراف والدعم الفني، متفرغون لخدمة طلاب كتاب الله.
-              </p>
-            </div>
-            <Link
-              to="/team"
-              className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-850 dark:text-gold-400 hover:text-emerald-700 hover:underline"
-            >
-              عرض كامل المشايخ وفريق العمل ←
-            </Link>
-          </FadeInUp>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {teachers.map((teacher) => (
-              <div
-                key={teacher.id}
-                className="bg-white dark:bg-emerald-900/25 p-5 sm:p-6 rounded-3xl border border-stone-200/70 dark:border-gold-500/15 shadow-md flex flex-col justify-between gap-3"
+              <a
+                href={whatsapp[s.id]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`btn-glow mt-9 flex items-center justify-center gap-2.5 h-14 rounded-full font-bold transition-colors ${s.button}`}
               >
-                <div className="flex items-start gap-3">
-                  <IslamicAvatar
-                    gender={teacher.gender}
-                    role={teacher.category === 'female_teachers' ? 'teacher' : 'sheikh'}
-                    size="md"
-                  />
-                  <div>
-                    <h3 className="font-amiri text-lg sm:text-xl font-bold text-emerald-950 dark:text-gold-200">
-                      {teacher.name}
-                    </h3>
-                    <span className="text-xs text-stone-500 dark:text-stone-400 block mt-0.5">
-                      {teacher.title}
-                    </span>
-                  </div>
+                <MessageCircle className="w-5 h-5" aria-hidden />
+                {s.cta}
+              </a>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal className="mt-8 flex items-center justify-center gap-3 text-center text-sm text-stone-600 dark:text-mist-300">
+          <ShieldCheck className="w-5 h-5 shrink-0 text-gold-600 dark:text-gold-400" aria-hidden />
+          نلتزم بالخصوصية والآداب الإسلامية التامة، ولا يُسمح باختلاط المجموعات مطلقاً.
+        </Reveal>
+      </section>
+
+      {/* ===== Steps ===== */}
+      <section className="bg-paper-deep dark:bg-emerald-950 border-y border-stone-300/70 dark:border-gold-500/10 py-24 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <Reveal as="div" className="text-center mb-16">
+            <h2 className={sectionHeading}>ثلاث خطوات للانطلاق</h2>
+          </Reveal>
+          <div className="relative">
+          <div aria-hidden className="hidden md:block absolute top-11 inset-x-[16%] border-t border-dashed border-gold-600/60" />
+          <ol className="relative grid md:grid-cols-3 gap-12 md:gap-10">
+            {STEPS.map((s, i) => (
+              <Reveal key={s.n} as="li" delay={i * 0.12} className="relative text-center">
+                <div className="relative mx-auto w-[88px] h-[88px] grid place-items-center">
+                  <svg viewBox="-110 -110 220 220" aria-hidden className="absolute inset-0 w-full h-full">
+                    <polygon points="100,0 -70.71,70.71 0,-100 70.71,70.71 -100,0 70.71,-70.71 0,100 -70.71,-70.71" className="fill-emerald-900 stroke-gold-500" strokeWidth={4} />
+                  </svg>
+                  <span className="relative font-serif font-bold text-3xl text-gold-300">{s.n}</span>
                 </div>
-                <p className="text-xs text-stone-600 dark:text-stone-300 font-light line-clamp-2">
-                  {teacher.bio}
-                </p>
-              </div>
+                <h3 className="mt-5 mb-2 text-[21px] font-bold text-emerald-900 dark:text-gold-200">{s.title}</h3>
+                <p className="mx-auto max-w-xs text-base leading-8 text-stone-600 dark:text-mist-300">{s.text}</p>
+              </Reveal>
             ))}
+          </ol>
           </div>
         </div>
       </section>
 
-      {/* 6. Featured Programs */}
-      <section className="py-10 sm:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeInUp className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
-          <div className="flex flex-col gap-1.5">
-            <h2 className="font-amiri text-2xl sm:text-3xl font-bold text-emerald-950 dark:text-gold-100">
-              برامجنا القرآنية المتميزة
-            </h2>
-            <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 font-light max-w-xl">
-              اختر المسار الذي يناسب مستواك وانضم إلى حلقات الحفظ والتجويد مجاناً.
-            </p>
+      {/* ===== Team ===== */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
+        <Reveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 mb-12">
+          <div>
+            <p className={eyebrow}>أهل القرآن</p>
+            <h2 className={`mt-2 ${sectionHeading}`}>المشايخ وفريق العمل</h2>
           </div>
-          <Link
-            to="/programs"
-            className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-850 dark:text-gold-400 hover:text-emerald-700 hover:underline"
-          >
-            عرض كافة البرامج ←
+          <Link to="/team" className="self-start sm:self-auto pb-1 border-b border-gold-600 font-semibold text-emerald-900 dark:text-gold-300 hover:text-emerald-700 dark:hover:text-gold-200">
+            عرض الفريق كاملاً
           </Link>
-        </FadeInUp>
-
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((n) => (
-              <div key={n} className="h-72 rounded-3xl bg-stone-200 dark:bg-emerald-900/20 animate-pulse" />
-            ))}
-          </div>
-        ) : (
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredPrograms.map((program) => (
-              <StaggerItem key={program.id}>
-                <Card program={program} />
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-        )}
+        </Reveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {teachers.map((t, i) => (
+            <Reveal key={t.id} as="article" delay={i * 0.1} className="lift rounded-3xl border border-stone-300 dark:border-gold-500/15 bg-stone-50 dark:bg-emerald-900/40 p-7 text-center">
+              <div className="mx-auto w-[170px] h-[210px] grid place-items-center rounded-t-full rounded-b-2xl bg-emerald-900 shadow-[inset_0_0_0_6px_var(--color-stone-50),0_0_0_1px_var(--color-gold-600)] dark:shadow-[inset_0_0_0_6px_var(--color-emerald-950),0_0_0_1px_var(--color-gold-600)]">
+                <span aria-hidden className="font-display text-6xl text-gold-400">{initialOf(t.name)}</span>
+              </div>
+              <h3 className="mt-6 mb-1 text-[21px] font-bold text-emerald-900 dark:text-gold-200">{t.name}</h3>
+              <p className="text-[15px] font-semibold text-gold-700 dark:text-gold-400">{t.title}</p>
+              <p className="mt-3 text-[15px] leading-7 text-stone-600 dark:text-mist-300 line-clamp-2">{t.bio}</p>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
-      {/* 7. Final Free Registration CTA */}
-      <section className="py-10 sm:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeInUp className="bg-gradient-to-l from-emerald-950 via-emerald-900 to-stone-950 text-white rounded-3xl p-8 sm:p-12 border border-gold-500/30 shadow-xl text-center flex flex-col items-center gap-4 relative overflow-hidden">
-          <div className="absolute inset-0 islamic-pattern opacity-8 pointer-events-none" />
-          <div className="w-14 h-14 rounded-full bg-gold-500/20 text-gold-400 flex items-center justify-center shadow-inner">
-            <ShieldCheck className="w-7 h-7" />
-          </div>
-          <h2 className="font-amiri text-2xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-gold-100 via-gold-300 to-gold-500">
-            ابدأ رحلتك المباركة في حفظ كتاب الله اليوم
-          </h2>
-          <p className="text-stone-300 max-w-xl text-xs sm:text-sm font-light leading-relaxed">
-            المقرأة مفتوحة لجميع الراغبين في شتى بقاع الأرض، وبالمجان احتساباً للأجر وثواب نشر كتاب الله عز وجل.
+      {/* ===== Programmes ===== */}
+      <section className="bg-stone-50 dark:bg-emerald-950 border-t border-stone-300/70 dark:border-gold-500/10 py-28 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <Reveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 mb-12">
+            <div>
+              <p className={eyebrow}>مسارات الحفظ والتجويد</p>
+              <h2 className={`mt-2 ${sectionHeading}`}>برامجنا القرآنية</h2>
+            </div>
+            <Link to="/programs" className="self-start sm:self-auto pb-1 border-b border-gold-600 font-semibold text-emerald-900 dark:text-gold-300 hover:text-emerald-700 dark:hover:text-gold-200">
+              عرض كافة البرامج
+            </Link>
+          </Reveal>
+          {loading ? (
+            <div className="grid md:grid-cols-3 gap-6">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="h-80 rounded-3xl bg-stone-200 dark:bg-emerald-900/40 animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredPrograms.map((program, i) => (
+                <Reveal key={program.id} delay={i * 0.1}>
+                  <Card program={program} />
+                </Reveal>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ===== Final call ===== */}
+      <section className="dark relative overflow-hidden px-4 sm:px-6 py-32 text-center bg-night text-mist-100 bg-[radial-gradient(90%_120%_at_50%_0%,var(--color-emerald-800),var(--color-night)_70%)]">
+        <Rosette className="turn-slow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] max-w-none aspect-square opacity-15 text-gold-500" weight={0.6} />
+        <Reveal className="relative">
+          <h2 className="font-display font-bold text-[clamp(2.75rem,6vw,4.75rem)] leading-tight text-gold-400">ابدأ رحلتك مع كتاب الله اليوم</h2>
+          <p className="mt-5 mx-auto max-w-2xl text-[19px] leading-[1.9] text-mist-300">
+            المقرأة مفتوحة للجميع في شتى بقاع الأرض، بالمجان، احتساباً للأجر.
           </p>
-          <a
-            href="#online-learning"
-            className="px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm text-emerald-950 bg-gradient-to-l from-gold-500 via-gold-400 to-gold-300 hover:from-gold-400 hover:to-gold-200 shadow-xl hover:scale-105 transition-all duration-300"
+          <button
+            type="button"
+            onClick={scrollToJoin}
+            className="btn-glow mt-10 inline-flex items-center h-15 px-10 rounded-full bg-gold-500 text-emerald-950 text-lg font-bold"
           >
-            انضم إلى مجموعات المقرأة الآن
-          </a>
-        </FadeInUp>
+            انضم إلى المقرأة الآن
+          </button>
+        </Reveal>
       </section>
-
     </div>
   );
 };
