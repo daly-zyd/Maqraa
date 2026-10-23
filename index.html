@@ -5,6 +5,21 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>مقرأة بالقرآن نحيا</title>
+    <meta name="theme-color" content="#061c17" />
+    <script>
+      // Decides once, before any paint, whether the opening plays (read by src/components/CinemaIntro.tsx):
+      // once per browser session, never for visitors who prefer reduced motion.
+      (function () {
+        var root = document.documentElement;
+        try {
+          if (matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage.getItem('maqraa_intro_seen')) return;
+          sessionStorage.setItem('maqraa_intro_seen', '1');
+        } catch (e) {
+          /* storage blocked: play it */
+        }
+        root.setAttribute('data-intro', '');
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

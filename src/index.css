@@ -1,60 +1,62 @@
-@import "@fontsource-variable/noto-naskh-arabic";
-@import "@fontsource-variable/cormorant-garamond";
+/* Self-hosted faces (subset files load on demand through unicode-range) */
+@import "@fontsource/ibm-plex-sans-arabic/300.css";
+@import "@fontsource/ibm-plex-sans-arabic/400.css";
+@import "@fontsource/ibm-plex-sans-arabic/500.css";
+@import "@fontsource/ibm-plex-sans-arabic/600.css";
+@import "@fontsource/ibm-plex-sans-arabic/700.css";
+@import "@fontsource/aref-ruqaa/400.css";
+@import "@fontsource/aref-ruqaa/700.css";
+@import "@fontsource/amiri/400.css";
+@import "@fontsource/amiri/700.css";
 @import "@fontsource/amiri-quran";
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Thuluth display face — logo lettering, hero title and section marks only */
-@font-face {
-  font-family: "Decotype Thuluth";
-  src: url("/fonts/DecotypeThuluthIII.woff2") format("woff2");
-  font-display: swap;
-}
-
 /*
- * Palette is lifted from the three Bel Quran Nahya logos:
- *   emerald  = mushaf cover of the green logo
- *   gold     = antique gilding on every rim and the title cartouche
- *   oxblood  = velvet of the Hafs men logo
+ * "Mihrab nocturne" — palette from the logos, tuned for the night ground:
+ *   emerald  = night green of the ground and the mushaf cover
+ *   gold     = gilding: rules, rosettes, display titles, primary actions
+ *   oxblood  = velvet of the Hafs men logo (also the women's space tint)
  *   lapis    = ink of the cover calligraphy
- *   stone    = parchment of the page behind the logos (warm, never grey)
+ *   stone    = parchment grounds (light end) and green-grey ink (dark end)
+ *   mist     = muted text on the night ground
  */
 @theme {
   --color-emerald-50: #eff6f2;
-  --color-emerald-100: #d8e9df;
+  --color-emerald-100: #dcebe3;
   --color-emerald-200: #b1d3c1;
   --color-emerald-300: #7fb59b;
   --color-emerald-400: #4b9275;
-  --color-emerald-500: #1c6b52;
-  --color-emerald-600: #14553f;
-  --color-emerald-700: #0f4332;
-  --color-emerald-800: #0a3226;
-  --color-emerald-900: #07241b;
-  --color-emerald-950: #041812;
+  --color-emerald-500: #23735b;
+  --color-emerald-600: #1a5c49;
+  --color-emerald-700: #134a3b;
+  --color-emerald-800: #0e3a2f;
+  --color-emerald-900: #0a2a22;
+  --color-emerald-950: #061c17;
 
-  --color-gold-50: #fbf7ec;
-  --color-gold-100: #f5ecd0;
-  --color-gold-200: #ecdaa1;
-  --color-gold-300: #e3c777;
-  --color-gold-400: #d3b055;
-  --color-gold-500: #bf9534;
-  --color-gold-600: #9c7623;
-  --color-gold-700: #7a5b1b;
+  --color-gold-50: #fff8e6;
+  --color-gold-100: #f8edd2;
+  --color-gold-200: #f2e2bf;
+  --color-gold-300: #ebd39c;
+  --color-gold-400: #e2c383;
+  --color-gold-500: #d4af6a;
+  --color-gold-600: #a8823f;
+  --color-gold-700: #7a5c24;
   --color-gold-800: #5c4416;
   --color-gold-900: #3f2f10;
   --color-gold-950: #261c08;
 
   --color-oxblood-50: #fbf1f2;
   --color-oxblood-100: #f4dadd;
-  --color-oxblood-200: #e8b5bc;
-  --color-oxblood-300: #d68793;
+  --color-oxblood-200: #efc7b6;
+  --color-oxblood-300: #e8b9a6;
   --color-oxblood-400: #bf5568;
   --color-oxblood-500: #8f2438;
   --color-oxblood-600: #741a2d;
   --color-oxblood-700: #5c1424;
-  --color-oxblood-800: #440e1a;
-  --color-oxblood-900: #2f0911;
+  --color-oxblood-800: #4a2a2e;
+  --color-oxblood-900: #2b1418;
   --color-oxblood-950: #1c050a;
 
   --color-lapis-50: #eff3fa;
@@ -69,39 +71,43 @@
   --color-lapis-900: #0d1a39;
   --color-lapis-950: #080f24;
 
-  --color-stone-50: #faf6ee;
-  --color-stone-100: #f3ecdd;
-  --color-stone-200: #e6dcc6;
-  --color-stone-300: #d3c6a8;
+  --color-stone-50: #fbf6ea;
+  --color-stone-100: #f6efe0;
+  --color-stone-200: #efe5cf;
+  --color-stone-300: #e5d6b4;
   --color-stone-400: #a39a85;
-  --color-stone-500: #7d7563;
-  --color-stone-600: #5b5445;
-  --color-stone-700: #453f33;
-  --color-stone-800: #2e2a22;
-  --color-stone-900: #1d1a15;
-  --color-stone-950: #0e0d0a;
+  --color-stone-500: #6a776f;
+  --color-stone-600: #4e5d55;
+  --color-stone-700: #3f4a44;
+  --color-stone-800: #1d2a24;
+  --color-stone-900: #141e19;
+  --color-stone-950: #0b120f;
 
-  --color-paper: #f4ecda;
-  --color-paper-deep: #ebe0c8;
-  --color-night: #04140e;
+  --color-mist-100: #f4ecdb;
+  --color-mist-200: #d7ddd6;
+  --color-mist-300: #c9d2cb;
+  --color-mist-400: #a9b8ae;
 
-  /* One text family for Arabic and Latin, a calligraphic display face, a Quran face for verses */
-  --font-sans: "Noto Naskh Arabic Variable", "Cormorant Garamond Variable", system-ui, serif;
-  --font-display: "Cormorant Garamond Variable", "Noto Naskh Arabic Variable", serif;
-  --font-thuluth: "Decotype Thuluth", "Noto Naskh Arabic Variable", serif;
-  --font-quran: "Amiri Quran", "Noto Naskh Arabic Variable", serif;
-  /* legacy aliases: existing pages still use these class names */
-  --font-amiri: "Cormorant Garamond Variable", "Noto Naskh Arabic Variable", serif;
-  --font-messiri: "Cormorant Garamond Variable", "Noto Naskh Arabic Variable", serif;
-  --font-alexandria: "Noto Naskh Arabic Variable", sans-serif;
-  --font-tajawal: "Noto Naskh Arabic Variable", sans-serif;
-  --font-cairo: "Noto Naskh Arabic Variable", sans-serif;
-  --font-inter: "Noto Naskh Arabic Variable", sans-serif;
+  --color-paper: #f6efe0;
+  --color-paper-deep: #efe5cf;
+  --color-night: #061c17;
+
+  /* UI text, calligraphic display, classical serif headings, Quran face for verses */
+  --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-display: "Aref Ruqaa", "Amiri", serif;
+  --font-serif: "Amiri", serif;
+  --font-quran: "Amiri Quran", "Amiri", serif;
+  /* legacy class names still used by pages */
+  --font-amiri: "Amiri", serif;
+  --font-thuluth: "Aref Ruqaa", "Amiri", serif;
+
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out-strong: cubic-bezier(0.7, 0, 0.2, 1);
 }
 
 /*
- * Maqraa themes. Every legacy "emerald-*" utility reads the --color-emerald-* variables,
- * so re-pointing the scale re-skins the whole site (the name is historical: it means "brand deep colour").
+ * Maqraa themes. Every "emerald-*" utility reads the --color-emerald-* variables,
+ * so re-pointing the scale re-skins the whole site (the name means "brand deep colour").
  * Set with <html data-maqraa="…">; the default theme sets nothing.
  */
 @layer base {
@@ -131,6 +137,13 @@
   html {
     font-family: var(--font-sans);
     scroll-behavior: smooth;
+    background-color: var(--color-paper);
+  }
+  /* Set by the inline script in index.html when the opening plays: no light flash before it */
+  html[data-intro],
+  html[data-intro] body {
+    background-color: var(--color-night);
+    overflow: hidden;
   }
 
   body {
@@ -142,7 +155,7 @@
 
   html.dark body {
     background-color: var(--color-night);
-    @apply text-stone-100;
+    @apply text-mist-100;
   }
 
   h1, h2, h3, h4, .font-amiri {
@@ -151,7 +164,7 @@
   }
 
   ::selection {
-    background-color: rgba(191, 149, 52, 0.35);
+    background-color: rgba(212, 175, 106, 0.4);
     color: var(--color-emerald-950);
   }
 
@@ -180,51 +193,50 @@
 
 .font-thuluth {
   font-family: var(--font-thuluth);
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 /* Dot lattice (kept: used by several pages) */
 .islamic-pattern {
   background-image:
-    radial-gradient(rgba(191, 149, 52, 0.28) 1.2px, transparent 1.2px),
-    radial-gradient(rgba(20, 85, 63, 0.2) 1.2px, transparent 1.2px);
+    radial-gradient(rgba(212, 175, 106, 0.28) 1.2px, transparent 1.2px),
+    radial-gradient(rgba(26, 92, 73, 0.2) 1.2px, transparent 1.2px);
   background-size: 28px 28px;
   background-position: 0 0, 14px 14px;
 }
 
 /* Eight-point star lattice (khatam) — page ground */
 .islamic-arabesque-bg {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%239c7623' stroke-width='.8' stroke-opacity='.16'%3E%3Cpath d='M36 6 46 26 66 36 46 46 36 66 26 46 6 36 26 26Z'/%3E%3Cpath d='M18 18l9 9M54 18l-9 9M18 54l9-9M54 54l-9-9'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 72px 72px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23a8823f' stroke-width='.8' stroke-opacity='.16'%3E%3Cpath d='M76 40 14.54 65.46 40 4 65.46 65.46 4 40 65.46 14.54 40 76 14.54 14.54Z'/%3E%3Cpath d='M76 40 40 76 4 40 40 4Z' stroke-opacity='.1'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 80px 80px;
 }
 .dark .islamic-arabesque-bg {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23d3b055' stroke-width='.8' stroke-opacity='.1'%3E%3Cpath d='M36 6 46 26 66 36 46 46 36 66 26 46 6 36 26 26Z'/%3E%3Cpath d='M18 18l9 9M54 18l-9 9M18 54l9-9M54 54l-9-9'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23d4af6a' stroke-width='.8' stroke-opacity='.1'%3E%3Cpath d='M76 40 14.54 65.46 40 4 65.46 65.46 4 40 65.46 14.54 40 76 14.54 14.54Z'/%3E%3Cpath d='M76 40 40 76 4 40 40 4Z' stroke-opacity='.06'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* Mushaf page margin: double gold rule, drawn once, fixed to the viewport */
+/* Mushaf page margin: double gold rule */
 .mushaf-frame {
-  border: 1px solid rgba(156, 118, 35, 0.4);
-  outline: 1px solid rgba(156, 118, 35, 0.22);
+  border: 1px solid rgba(168, 130, 63, 0.45);
+  outline: 1px solid rgba(168, 130, 63, 0.22);
   outline-offset: 5px;
 }
 .dark .mushaf-frame {
-  border-color: rgba(211, 176, 85, 0.3);
-  outline-color: rgba(211, 176, 85, 0.16);
+  border-color: rgba(212, 175, 106, 0.32);
+  outline-color: rgba(212, 175, 106, 0.16);
 }
 
 /* Gold leaf text */
 .text-gilded {
-  background-image: linear-gradient(180deg, var(--color-gold-200) 0%, var(--color-gold-400) 55%, var(--color-gold-600) 100%);
+  background-image: linear-gradient(180deg, var(--color-gold-300) 0%, var(--color-gold-500) 60%, var(--color-gold-600) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* Mihrab arch: clip for the hero emblem window */
-.mihrab {
-  clip-path: path("M0 360 V150 C0 60 80 0 160 0 S320 60 320 150 V360 Z");
-}
+/* Mihrab arch: the shape of section cards and portraits */
+.arch { border-radius: 9999px 9999px 1.75rem 1.75rem; }
 
+/* ---- motion ------------------------------------------------------------------------------------ */
 @keyframes ring-draw {
   from { stroke-dashoffset: 1; opacity: 0; }
   to { stroke-dashoffset: 0; opacity: 1; }
@@ -232,43 +244,95 @@
 .ring-draw {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: ring-draw 2.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  animation: ring-draw 2.4s var(--ease-out-soft) 0.2s forwards;
 }
 
-@keyframes turn {
-  to { transform: rotate(360deg); }
-}
-.turn-slow { animation: turn 160s linear infinite; }
+@keyframes turn { to { transform: rotate(360deg); } }
+@keyframes turn-back { to { transform: rotate(-360deg); } }
+.turn-slow { animation: turn 180s linear infinite; }
+.turn-back-slow { animation: turn-back 120s linear infinite; }
 
-/* Hero ground: khatam lattice drifting very slowly, plus a breathing glow */
-@keyframes drift {
-  to { transform: translate3d(144px, 72px, 0); }
-}
-/* transform-only (compositor) drift: the layer is oversized by two lattice tiles so its edges never show */
-.drift-slow { animation: drift 90s linear infinite; will-change: transform; }
+/* Hero ground: khatam lattice drifting by exactly one tile (seamless), plus a breathing glow */
+@keyframes drift { to { transform: translate3d(80px, 80px, 0); } }
+.drift-slow { animation: drift 40s linear infinite; will-change: transform; }
 @keyframes glow-breathe {
-  0%, 100% { opacity: 0.75; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.06); }
 }
 .glow-breathe { animation: glow-breathe 7s ease-in-out infinite; }
+
+/* Entrance: fade up out of a soft blur. Stagger with the delay helpers. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(28px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.rise { animation: rise 1.1s var(--ease-out-soft) both; }
+.rise-1 { animation-delay: 0.15s; }
+.rise-2 { animation-delay: 0.35s; }
+.rise-3 { animation-delay: 0.55s; }
+.rise-4 { animation-delay: 0.75s; }
+.rise-5 { animation-delay: 0.95s; }
+
+@keyframes twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+.twinkle { animation: twinkle 4s ease-in-out infinite; }
+
+/* Light sweep across a gold button (put an absolutely positioned span with this class inside) */
+@keyframes sheen { 0% { transform: translateX(120%); } 60%, 100% { transform: translateX(-120%); } }
+.sheen {
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  animation: sheen 5s ease-in-out infinite;
+}
+
+/* Cards lift on hover; gold buttons glow */
+.lift { transition: transform 0.5s var(--ease-out-soft), box-shadow 0.5s, border-color 0.5s; }
+.lift:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -30px rgba(6, 28, 23, 0.55); border-color: var(--color-gold-500); }
+.btn-glow { transition: transform 0.3s, box-shadow 0.3s; }
+.btn-glow:hover { transform: translateY(-2px); box-shadow: 0 14px 40px -12px rgba(212, 175, 106, 0.75); }
+
+.gold-glow { box-shadow: 0 0 25px -3px rgba(212, 175, 106, 0.3); }
+
+/* ---- opening (CinemaIntro): point of light -> star draws -> rosette blooms -> logo -> title -> doors ---- */
+@keyframes intro-spark {
+  0% { opacity: 0; transform: scale(0.2); }
+  30% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(3); }
+}
+@keyframes intro-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes intro-bloom {
+  from { opacity: 0.85; transform: scale(0.82) rotate(0deg); }
+  to { opacity: 1; transform: scale(1) rotate(30deg); }
+}
+@keyframes intro-fade-scale {
+  from { opacity: 0; transform: scale(0.7); filter: blur(10px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes intro-title {
+  from { opacity: 0; transform: translateY(30px); filter: blur(8px); letter-spacing: 0.2em; }
+  to { opacity: 1; transform: none; filter: none; letter-spacing: 0; }
+}
+@keyframes intro-seam {
+  0% { opacity: 0; transform: scaleY(0); }
+  35% { opacity: 1; transform: scaleY(1); }
+  100% { opacity: 0; transform: scaleY(1); }
+}
+@keyframes intro-door-right { to { transform: translateX(101%); } }
+@keyframes intro-door-left { to { transform: translateX(-101%); } }
+@keyframes intro-stage-out { to { opacity: 0; transform: scale(1.12); } }
+
+.intro-spark { animation: intro-spark 0.7s var(--ease-out-soft) both; }
+.intro-draw > * { stroke-dasharray: 1; animation: intro-draw 1.5s var(--ease-in-out-strong) 0.2s both; }
+.intro-bloom { animation: intro-bloom 2.2s var(--ease-out-soft) 0.4s both; }
+.intro-halo { animation: intro-fade-scale 1.2s var(--ease-out-soft) 0.6s both; }
+.intro-medal { animation: intro-fade-scale 0.8s var(--ease-out-soft) 0.9s both; }
+.intro-title { animation: intro-title 0.9s var(--ease-out-soft) 1.3s both; }
+.intro-sub { animation: rise 0.7s var(--ease-out-soft) 1.7s both; }
+.intro-open .intro-stage { animation: intro-stage-out 0.5s ease-in both; }
+.intro-open .intro-seam { animation: intro-seam 0.6s ease-out both; }
+.intro-open .intro-door-right { animation: intro-door-right 0.9s var(--ease-in-out-strong) 0.25s both; }
+.intro-open .intro-door-left { animation: intro-door-left 0.9s var(--ease-in-out-strong) 0.25s both; }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--color-stone-100); }
 .dark ::-webkit-scrollbar-track { background: var(--color-emerald-950); }
-::-webkit-scrollbar-thumb { background: rgba(156, 118, 35, 0.45); border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(156, 118, 35, 0.7); }
-
-.gold-glow { box-shadow: 0 0 25px -3px rgba(191, 149, 52, 0.3); }
-.gold-glow-lg { box-shadow: 0 0 45px -5px rgba(191, 149, 52, 0.45); }
-.emerald-glow { box-shadow: 0 0 30px -5px rgba(20, 85, 63, 0.4); }
-
-@keyframes gold-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-.animate-gold-shimmer {
-  background: linear-gradient(90deg, #bf9534 0%, #fbf7ec 50%, #bf9534 100%);
-  background-size: 200% 100%;
-  animation: gold-shimmer 3.5s infinite linear;
-}
-@keyframes soft-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-.animate-float { animation: soft-float 5s ease-in-out infinite; }
-@keyframes pulse-subtle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.88; transform: scale(1.02); } }
-.animate-pulse-subtle { animation: pulse-subtle 3s ease-in-out infinite; }
+::-webkit-scrollbar-thumb { background: rgba(168, 130, 63, 0.45); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(168, 130, 63, 0.7); }
