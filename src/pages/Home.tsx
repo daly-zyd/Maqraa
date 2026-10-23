@@ -7,14 +7,12 @@ import { IslamicAvatar } from '../components/Avatars';
 import {
   Sparkles,
   BookOpen,
-  GraduationCap,
   Users,
   MessageCircle,
   ShieldCheck,
   CheckCircle2,
   ExternalLink,
-  ChevronLeft,
-  HeartHandshake
+  ChevronLeft
 } from 'lucide-react';
 import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animations';
 import { StarMark } from '../components/StarMark';
@@ -47,10 +45,10 @@ export const Home: React.FC = () => {
   }, []);
 
   const stats = [
-    { id: 1, name: 'طالب وطالبة ملتحقين', value: '+500', icon: Users },
-    { id: 2, name: 'شيخ ومعلمة مجازين بالسند', value: '+25', icon: GraduationCap },
-    { id: 3, name: 'تكلفة الدراسة والالتحاق', value: 'مجانية 100%', icon: HeartHandshake },
-    { id: 4, name: 'برامج قرآنية متخصصة', value: '10', icon: BookOpen }
+    { id: 1, name: 'طالب وطالبة ملتحقين', value: '+500' },
+    { id: 2, name: 'شيخ ومعلمة مجازين بالسند', value: '+25' },
+    { id: 3, name: 'تكلفة الدراسة والالتحاق', value: 'مجانية 100%' },
+    { id: 4, name: 'برامج قرآنية متخصصة', value: '10' }
   ];
 
   const featuredVerse = getPublishableVerses().find((v) => v.kind === 'ayah');
