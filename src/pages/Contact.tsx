@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
-import { Mail, Phone, Globe, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
-import { FadeInUp, StaggerContainer, StaggerItem } from '../components/Animations';
+import { AlertCircle, CheckCircle2, Clock, Globe, Loader2, Mail, Phone, Send } from 'lucide-react';
 import { sendContactEmail } from '../data';
-import { OrnamentDivider } from '../components/OrnamentDivider';
+import { PageHeader } from '../components/PageHeader';
+import { Reveal } from '../components/Reveal';
+
+type Status = 'idle' | 'submitting' | 'success' | 'error';
+
+const CONTACT_INFO = [
+  { title: 'طبيعة التعليم والحلقات', value: 'تعليم قرآني تفاعلي عن بُعد عبر الإنترنت، متاح للطلاب والطالبات حول العالم', icon: Globe },
+  { title: 'أرقام التواصل والواتساب', value: '+216 58 445 289 · +20 10 62666368', icon: Phone, isolate: true },
+  { title: 'البريد الإلكتروني', value: 'maqraa.belquorannehya@gmail.com', icon: Mail, isolate: true, href: 'mailto:maqraa.belquorannehya@gmail.com' },
+  { title: 'أوقات استقبال الاستفسارات', value: 'أيام الأسبوع ما عدا الجمعة، من صلاة العصر حتى صلاة العشاء', icon: Clock }
+];
+
+const field =
+  'w-full rounded-2xl border border-stone-300 dark:border-gold-500/20 bg-white/80 dark:bg-emerald-950/60 px-4 py-3.5 text-base text-stone-800 dark:text-mist-100 placeholder:text-stone-400 dark:placeholder:text-mist-400/70 focus:border-gold-500 disabled:opacity-60';
+const label = 'block mb-2 text-sm font-semibold text-stone-700 dark:text-mist-200';
 
 export const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [feedbackMessage, setFeedbackMessage] = useState<string>('');
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [status, setStatus] = useState<Status>('idle');
+  const [feedback, setFeedback] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -23,232 +31,108 @@ export const Contact: React.FC = () => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
       setStatus('error');
-      setFeedbackMessage('يرجى ملء جميع الحقول المطلوبة.');
+      setFeedback('يرجى ملء جميع الحقول المطلوبة.');
       return;
     }
-
     setStatus('submitting');
-    
-    const result = await sendContactEmail({
-      name: formData.name,
-      email: formData.email,
-      subject: formData.subject,
-      message: formData.message
-    });
-
-    if (result.success) {
-      setStatus('success');
-      setFeedbackMessage(result.message);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    } else {
-      setStatus('error');
-      setFeedbackMessage(result.message);
-    }
+    const result = await sendContactEmail(formData);
+    setStatus(result.success ? 'success' : 'error');
+    setFeedback(result.message);
+    if (result.success) setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
-  const contactInfo = [
-    {
-      id: 1,
-      title: 'طبيعة التعليم والحلقات',
-      value: 'تعليم قرآني تفاعلي 100% عن بُعد عبر الإنترنت (متاح لجميع الطلاب والطالبات حول العالم)',
-      icon: Globe
-    },
-    {
-      id: 2,
-      title: 'أرقام التواصل والواتساب',
-      value: '+216 58 445 289 | +20 10 62666368',
-      icon: Phone,
-      dir: 'ltr'
-    },
-    {
-      id: 3,
-      title: 'البريد الإلكتروني الرسمي',
-      value: 'maqraa.belquorannehya@gmail.com',
-      icon: Mail,
-      dir: 'ltr'
-    },
-    {
-      id: 4,
-      title: 'أوقات العمل واستقبال الاستفسارات',
-      value: 'أيام الأسبوع ما عدا الجمعة (من صلاة العصر حتى صلاة العشاء)',
-      icon: Clock
-    }
-  ];
+  const busy = status === 'submitting';
 
   return (
-    <div className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-right">
-      
-      {/* Header */}
-      <FadeInUp className="text-center max-w-3xl mx-auto mb-16 flex flex-col items-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold-500/10 text-gold-600 dark:text-gold-400 font-bold text-xs sm:text-sm mb-4">
-          <Send className="w-4 h-4" />
-          <span>تواصل مباشر وتسجيل فوري</span>
-        </div>
-        <h1 className="font-amiri text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-950 dark:text-gold-100 mb-4">
-          تواصل معنا والتسجيل
-        </h1>
-        <OrnamentDivider />
-        <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 font-light leading-relaxed">
-          يسعدنا الرد على جميع استفساراتكم المتعلقة بالبرامج والحلقات وطرق الانضمام لمجموعات المقرأة.
-        </p>
-      </FadeInUp>
+    <div>
+      <PageHeader
+        eyebrow="تواصل مباشر وتسجيل مبدئي"
+        title="تواصل معنا"
+        lead="يسعدنا الرد على جميع استفساراتكم المتعلقة بالبرامج والحلقات وطرق الانضمام لمجموعات المقرأة."
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        
-        {/* Info Column (Col 1) */}
-        <StaggerContainer className="flex flex-col gap-6 lg:col-span-1">
-          {contactInfo.map((info) => {
-            const Icon = info.icon;
-            return (
-              <StaggerItem 
-                key={info.id}
-                className="bg-white dark:bg-emerald-900/25 p-6 rounded-3xl border border-stone-200/70 dark:border-gold-500/15 shadow-md flex gap-4 group hover:border-gold-500/40 hover:shadow-lg transition-all duration-300"
-              >
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-100 to-emerald-50 dark:from-emerald-800/60 dark:to-emerald-900/80 text-emerald-800 dark:text-gold-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 shadow-inner transition-transform duration-200">
-                  <Icon className="w-6 h-6" />
-                </div>
-                <div className="flex flex-col gap-1 justify-center">
-                  <h3 className="font-bold text-stone-800 dark:text-stone-200 text-sm">
-                    {info.title}
-                  </h3>
-                  <span 
-                    className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 font-light leading-relaxed text-right"
-                    style={{ direction: info.dir ? 'ltr' : undefined }}
-                  >
-                    {info.value}
-                  </span>
-                </div>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
-
-        {/* Form Column (Col 2) */}
-        <FadeInUp delay={0.2} className="lg:col-span-2">
-          <div className="bg-white dark:bg-emerald-900/25 p-7 sm:p-10 rounded-3xl border border-stone-200/70 dark:border-gold-500/15 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-l from-gold-600 via-gold-400 to-gold-300" />
-            
-            <h2 className="font-amiri text-2xl sm:text-3xl font-bold text-emerald-950 dark:text-gold-200 mb-6 border-s-4 border-gold-500 ps-3">
-              نموذج الاستفسار والتسجيل المبدئي
-            </h2>
-
-            {status === 'success' && (
-              <div className="mb-6 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/50 border border-emerald-500/40 text-emerald-800 dark:text-gold-300 flex items-center gap-3 text-sm shadow-inner">
-                <CheckCircle2 className="w-6 h-6 text-gold-500 flex-shrink-0" />
-                <span>{feedbackMessage || 'تم إرسال رسالتكم بنجاح إلى إدارة المقرأة (maqraa.belquorannehya@gmail.com)! سنتواصل معكم في أقرب وقت.'}</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid lg:grid-cols-3 gap-8 items-start">
+        <ul className="flex flex-col gap-5">
+          {CONTACT_INFO.map(({ title, value, icon: Icon, isolate, href }, i) => (
+            <Reveal key={title} as="li" delay={i * 0.08} className="lift flex gap-4 rounded-3xl border border-stone-300 dark:border-gold-500/15 bg-stone-50 dark:bg-emerald-900/40 p-6">
+              <span className="grid place-items-center w-12 h-12 shrink-0 rounded-2xl bg-emerald-900 text-gold-300">
+                <Icon className="w-6 h-6" aria-hidden />
+              </span>
+              <div className="min-w-0">
+                <h2 className="font-bold text-emerald-900 dark:text-gold-200">{title}</h2>
+                <p className="mt-1 text-[15px] leading-7 text-stone-600 dark:text-mist-300 break-words">
+                  {href ? (
+                    <a href={href} className="hover:text-gold-700 dark:hover:text-gold-200"><bdi>{value}</bdi></a>
+                  ) : isolate ? (
+                    <bdi className="tabular-nums">{value}</bdi>
+                  ) : (
+                    value
+                  )}
+                </p>
               </div>
-            )}
+            </Reveal>
+          ))}
+        </ul>
 
-            {status === 'error' && (
-              <div className="mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-500/30 text-red-800 dark:text-red-300 flex items-center gap-3 text-sm shadow-inner">
-                <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0" />
-                <span>{feedbackMessage || 'يرجى ملء جميع الحقول المطلوبة (الاسم، البريد الإلكتروني، والرسالة) بشكل صحيح.'}</span>
-              </div>
-            )}
+        <Reveal className="lg:col-span-2 rounded-[32px] border border-stone-300 dark:border-gold-500/15 bg-stone-50 dark:bg-emerald-900/40 p-7 sm:p-10">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-emerald-900 dark:text-gold-300 mb-7">نموذج الاستفسار والتسجيل المبدئي</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              
-              {/* Grid 2 cols */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                
-                {/* Name */}
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="name" className="text-xs font-bold text-stone-700 dark:text-stone-300">
-                    الاسم الكامل <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="px-4 py-3 rounded-2xl border border-stone-250 dark:border-emerald-800/30 bg-stone-50/80 dark:bg-emerald-950/40 text-stone-800 dark:text-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 transition-all"
-                    placeholder="مثال: أحمد عبد الله"
-                    disabled={status === 'submitting'}
-                  />
-                </div>
+          {(status === 'success' || status === 'error') && (
+            <p
+              role={status === 'error' ? 'alert' : 'status'}
+              className={`mb-6 flex items-center gap-3 rounded-2xl border p-4 text-[15px] ${
+                status === 'success'
+                  ? 'border-emerald-500/40 bg-emerald-50 text-emerald-900 dark:bg-emerald-900/60 dark:text-gold-200'
+                  : 'border-oxblood-400/40 bg-oxblood-50 text-oxblood-700 dark:bg-oxblood-900/50 dark:text-oxblood-100'
+              }`}
+            >
+              {status === 'success' ? (
+                <CheckCircle2 className="w-6 h-6 shrink-0 text-gold-600" aria-hidden />
+              ) : (
+                <AlertCircle className="w-6 h-6 shrink-0" aria-hidden />
+              )}
+              {feedback}
+            </p>
+          )}
 
-                {/* Email */}
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="email" className="text-xs font-bold text-stone-700 dark:text-stone-300">
-                    البريد الإلكتروني <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="px-4 py-3 rounded-2xl border border-stone-250 dark:border-emerald-800/30 bg-stone-50/80 dark:bg-emerald-950/40 text-stone-800 dark:text-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 transition-all"
-                    placeholder="example@mail.com"
-                    style={{ direction: 'ltr', textAlign: 'right' }}
-                    disabled={status === 'submitting'}
-                  />
-                </div>
-
-              </div>
-
-              {/* Subject */}
-              <div className="flex flex-col gap-2">
-                <label htmlFor="subject" className="text-xs font-bold text-stone-700 dark:text-stone-300">
-                  الموضوع / اسم البرنامج
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="name" className={label}>
+                  الاسم الكامل <span className="text-oxblood-500" aria-hidden>*</span>
                 </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="px-4 py-3 rounded-2xl border border-stone-250 dark:border-emerald-800/30 bg-stone-50/80 dark:bg-emerald-950/40 text-stone-800 dark:text-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 transition-all"
-                  placeholder="مثال: طلب التسجيل في برنامج الحفظ التأسيسي"
-                  disabled={status === 'submitting'}
-                />
+                <input id="name" name="name" type="text" autoComplete="name" required value={formData.name} onChange={handleChange} className={field} placeholder="مثال: أحمد عبد الله" disabled={busy} />
               </div>
-
-              {/* Message */}
-              <div className="flex flex-col gap-2">
-                <label htmlFor="message" className="text-xs font-bold text-stone-700 dark:text-stone-300">
-                  تفاصيل طلبك أو استفسارك <span className="text-red-500">*</span>
+              <div>
+                <label htmlFor="email" className={label}>
+                  البريد الإلكتروني <span className="text-oxblood-500" aria-hidden>*</span>
                 </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={4}
-                  className="px-4 py-3 rounded-2xl border border-stone-250 dark:border-emerald-800/30 bg-stone-50/80 dark:bg-emerald-950/40 text-stone-800 dark:text-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 resize-none transition-all"
-                  placeholder="اكتب هنا تفاصيل طلبك، الحفظ السابق لديك، والقسم المناسب لك (رجال / نساء)..."
-                  disabled={status === 'submitting'}
-                />
+                <input id="email" name="email" type="email" dir="auto" autoComplete="email" required value={formData.email} onChange={handleChange} className={field} placeholder="example@mail.com" disabled={busy} />
               </div>
-
-              {/* Submit button */}
-              <button
-                type="submit"
-                disabled={status === 'submitting'}
-                className="w-full py-4 px-6 rounded-2xl font-bold text-white dark:text-emerald-950 bg-gradient-to-l from-emerald-800 to-emerald-600 dark:from-gold-500 dark:to-gold-400 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                {status === 'submitting' ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white dark:border-emerald-950 border-t-transparent rounded-full animate-spin" />
-                    <span>جاري إرسال طلبك...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5 transform rotate-180" />
-                    <span>إرسال الرسالة الآن</span>
-                  </>
-                )}
-              </button>
-
-            </form>
-
-          </div>
-        </FadeInUp>
-
+            </div>
+            <div>
+              <label htmlFor="subject" className={label}>الموضوع / اسم البرنامج</label>
+              <input id="subject" name="subject" type="text" value={formData.subject} onChange={handleChange} className={field} placeholder="مثال: طلب التسجيل في برنامج الحفظ التأسيسي" disabled={busy} />
+            </div>
+            <div>
+              <label htmlFor="message" className={label}>
+                تفاصيل طلبك أو استفسارك <span className="text-oxblood-500" aria-hidden>*</span>
+              </label>
+              <textarea id="message" name="message" rows={5} required value={formData.message} onChange={handleChange} className={`${field} resize-none`} placeholder="اكتب تفاصيل طلبك، والحفظ السابق لديك، والقسم المناسب لك (رجال / نساء)…" disabled={busy} />
+            </div>
+            <button
+              type="submit"
+              disabled={busy}
+              className="btn-glow inline-flex items-center justify-center gap-2.5 h-14 rounded-full bg-gold-500 text-emerald-950 font-bold disabled:opacity-60"
+            >
+              {busy ? <Loader2 className="w-5 h-5 animate-spin" aria-hidden /> : <Send className="w-5 h-5 rtl:-scale-x-100" aria-hidden />}
+              {busy ? 'جاري إرسال طلبك…' : 'إرسال الرسالة'}
+            </button>
+          </form>
+        </Reveal>
       </div>
-
     </div>
   );
 };
+
 export default Contact;

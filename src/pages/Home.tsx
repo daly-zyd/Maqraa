@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft, MessageCircle, ShieldCheck } from 'lucide-react';
 import { getPrograms, getSettings, getTeachers } from '../data';
 import type { Program, MaqraaSettings, Teacher } from '../data';
+import { ArchPortrait } from '../components/ArchPortrait';
 import { Card } from '../components/Card';
 import { Reveal } from '../components/Reveal';
 import { Rosette, StarBullet } from '../components/Rosette';
@@ -53,10 +54,6 @@ const SECTIONS = [
     turn: 'turn-back-slow'
   }
 ] as const;
-
-/** First letter of a name once honorifics are set aside: the arch portraits show it until photos exist. */
-const HONORIFICS = new Set(['فضيلة', 'الشيخ', 'الشيخة', 'الأستاذ', 'الأستاذة', 'المعلمة']);
-const initialOf = (name: string) => name.split(/\s+/).find((w) => !HONORIFICS.has(w))?.charAt(0) ?? name.charAt(0);
 
 const sectionHeading = 'font-display font-bold text-5xl sm:text-[56px] leading-tight text-emerald-900 dark:text-gold-300';
 const eyebrow = 'text-sm font-semibold tracking-[0.08em] text-gold-700 dark:text-gold-400';
@@ -279,9 +276,7 @@ export const Home: React.FC = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
           {teachers.map((t, i) => (
             <Reveal key={t.id} as="article" delay={i * 0.1} className="lift rounded-3xl border border-stone-300 dark:border-gold-500/15 bg-stone-50 dark:bg-emerald-900/40 p-7 text-center">
-              <div className="mx-auto w-[170px] h-[210px] grid place-items-center rounded-t-full rounded-b-2xl bg-emerald-900 shadow-[inset_0_0_0_6px_var(--color-stone-50),0_0_0_1px_var(--color-gold-600)] dark:shadow-[inset_0_0_0_6px_var(--color-emerald-950),0_0_0_1px_var(--color-gold-600)]">
-                <span aria-hidden className="font-display text-6xl text-gold-400">{initialOf(t.name)}</span>
-              </div>
+              <ArchPortrait name={t.name} className="mx-auto" />
               <h3 className="mt-6 mb-1 text-[21px] font-bold text-emerald-900 dark:text-gold-200">{t.name}</h3>
               <p className="text-[15px] font-semibold text-gold-700 dark:text-gold-400">{t.title}</p>
               <p className="mt-3 text-[15px] leading-7 text-stone-600 dark:text-mist-300 line-clamp-2">{t.bio}</p>
