@@ -1,19 +1,17 @@
 import React from "react";
 import AppRoutes from "./routes";
 import { CinemaIntro } from "./components/CinemaIntro";
-import { MotionConfig } from "framer-motion";
 import { AuthProvider } from "./features/auth/AuthContext";
 import { ThemeProvider } from "./features/theme/ThemeContext";
 
+/* Motion is CSS only; prefers-reduced-motion is honoured in index.css and by the motion-reduce: variants. */
 export const App: React.FC = () => {
   return (
     <ThemeProvider>
-      <MotionConfig reducedMotion="user">
-        <AuthProvider>
-          <CinemaIntro />
-          <AppRoutes />
-        </AuthProvider>
-      </MotionConfig>
+      <AuthProvider>
+        <CinemaIntro />
+        <AppRoutes />
+      </AuthProvider>
     </ThemeProvider>
   );
 };
