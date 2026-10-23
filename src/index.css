@@ -283,10 +283,19 @@
   animation: sheen 5s ease-in-out infinite;
 }
 
-/* Cards lift on hover; gold buttons glow */
-.lift { transition: transform 0.5s var(--ease-out-soft), box-shadow 0.5s, border-color 0.5s; }
+/*
+ * Cards lift on hover; gold buttons glow.
+ * These rules sit outside Tailwind's layers, so their `transition` replaces any transition utility on the same
+ * element: each list therefore also carries what those elements animate elsewhere — the scroll reveal of
+ * <Reveal> (opacity, translate, filter; same timing as its duration-1000 ease-out-soft) and hover colours.
+ */
+.lift {
+  transition:
+    transform 0.5s var(--ease-out-soft), box-shadow 0.5s, border-color 0.5s,
+    opacity 1s var(--ease-out-soft), translate 1s var(--ease-out-soft), filter 1s var(--ease-out-soft);
+}
 .lift:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -30px rgba(6, 28, 23, 0.55); border-color: var(--color-gold-500); }
-.btn-glow { transition: transform 0.3s, box-shadow 0.3s; }
+.btn-glow { transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s, color 0.3s, border-color 0.3s; }
 .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 14px 40px -12px rgba(212, 175, 106, 0.75); }
 
 .gold-glow { box-shadow: 0 0 25px -3px rgba(212, 175, 106, 0.3); }

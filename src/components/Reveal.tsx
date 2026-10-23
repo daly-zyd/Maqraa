@@ -15,6 +15,14 @@ interface RevealProps {
 export const Reveal: React.FC<RevealProps> = ({ children, className = '', delay = 0, as: Tag = 'div' }) => {
   const ref = useRef<HTMLElement>(null);
   const [shown, setShown] = useState(() => typeof IntersectionObserver === 'undefined');
+  // The stagger delay is dropped once the reveal is over, so later hover transitions (e.g. .lift) start at once
+  const [settled, setSettled] = useState(false);
+
+  useEffect(() => {
+    if (!shown || !delay) return;
+    const timer = setTimeout(() => setSettled(true), (delay + 1) * 1000);
+    return () => clearTimeout(timer);
+  }, [shown, delay]);
 
   useEffect(() => {
     const el = ref.current;
@@ -35,9 +43,9 @@ export const Reveal: React.FC<RevealProps> = ({ children, className = '', delay 
   return (
     <Tag
       ref={ref as React.Ref<never>}
-      style={delay ? { transitionDelay: `${delay}s` } : undefined}
+      style={delay && !settled ? { transitionDelay: `${delay}s` } : undefined}
       className={`transition-[opacity,translate,filter] duration-1000 ease-out-soft motion-reduce:transition-none ${
-        shown ? 'opacity-100 translate-y-0 blur-none' : 'opacity-0 translate-y-7 blur-[6px] motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:blur-none'
+        shown ? 'opacity-100 translate-none blur-none' : 'opacity-0 translate-y-7 blur-[6px] motion-reduce:opacity-100 motion-reduce:translate-none motion-reduce:blur-none'
       } ${className}`}
     >
       {children}
