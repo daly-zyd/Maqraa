@@ -60,9 +60,14 @@ export function apiErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
     if (!error.response) return 'تعذّر الاتصال بالخادم. تحقّق من الاتصال بالإنترنت ثم أعد المحاولة.';
     const status = error.response.status;
+    // Domain errors always carry an Arabic `detail` (backend core/exception_handler); field errors may not.
+    const detail = typeof error.response.data?.detail === 'string' ? (error.response.data.detail as string) : '';
     if (status === 429) return 'محاولات كثيرة. انتظر قليلا ثم حاول مرة أخرى.';
-    if (status === 401) return (error.response.data?.detail as string) || 'بيانات الدخول غير صحيحة.';
-    if (status === 400 && error.response.data?.detail) return error.response.data.detail as string;
+    if (status === 401) return detail || 'بيانات الدخول غير صحيحة.';
+    if (status === 403) return detail || 'ليست لديك صلاحية لهذا الإجراء.';
+    if (status === 404) return detail || 'العنصر غير موجود.';
+    if (status === 409) return detail || 'تعارض في البيانات.';
+    if (status === 400 && detail) return detail;
     if (status >= 500) return 'حدث خطأ في الخادم. حاول مرة أخرى بعد قليل.';
   }
   return 'حدث خطأ غير متوقع. حاول مرة أخرى.';

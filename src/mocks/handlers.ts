@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import type { Me } from '../features/auth/types';
+import type { MaqraaRole, Person } from '../features/people/types';
 import type { ScheduleSession, TemplateSlot } from '../features/schedule/types';
 import { addDays, dateInZone, weekdayOf } from '../features/schedule/week';
 import { DEMO_OTP, DEMO_PASSWORD } from './constants';
@@ -42,6 +43,13 @@ let lastOtpFor: string | null = null;
 
 // ---- scheduling ------------------------------------------------------------------------------------
 const PEOPLE: Record<number, string> = { 1: 'مشرف تجريبي', 2: 'شيخ تجريبي', 3: 'شيخ تجريبي ٢', 4: 'شيخ تجريبي ٣' };
+/** Roles per maqraa, then per person (backend access.MaqraaAccess). Person 4 teaches in both maqraat. */
+const ROSTER: Record<number, Record<number, MaqraaRole[]>> = {
+  1: { 1: ['admin'], 3: ['sheikh'], 4: ['sheikh'] },
+  2: { 2: ['sheikh'], 4: ['sheikh'] }
+};
+const hasRole = (maqraa: number, personId: number, roles: MaqraaRole[]) =>
+  (ROSTER[maqraa]?.[personId] ?? []).some((r) => roles.includes(r));
 const AR_WEEKDAYS = ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
 const AR_MONTHS = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
 const HIJRI = new Intl.DateTimeFormat('ar-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -125,8 +133,12 @@ function slotProblem(c: MockSlot): Response | null {
   if (!Number.isInteger(c.weekday) || c.weekday < 0 || c.weekday > 6) return fail(400, 'validation_error', 'يوم غير صالح');
   if (!HM.test(c.start) || !HM.test(c.end)) return fail(400, 'validation_error', 'بيانات غير صالحة');
   if (toMinutes(c.start) === toMinutes(c.end)) return fail(400, 'validation_error', 'وقت البداية يساوي وقت النهاية');
-  if (c.sheikh && !PEOPLE[c.sheikh]) return fail(400, 'validation_error', 'المصحح غير مسجل في هذه المقرأة', { sheikh_id: 'not_in_maqraa' });
-  if (c.supervisor && !PEOPLE[c.supervisor]) return fail(400, 'validation_error', 'المشرف غير مسجل في هذه المقرأة', { supervisor_id: 'not_in_maqraa' });
+  if (c.sheikh && !hasRole(c.maqraa, c.sheikh, ['sheikh'])) {
+    return fail(400, 'validation_error', 'المصحح غير مسجل في هذه المقرأة', { sheikh_id: 'not_in_maqraa' });
+  }
+  if (c.supervisor && !hasRole(c.maqraa, c.supervisor, ['supervisor', 'admin'])) {
+    return fail(400, 'validation_error', 'المشرف غير مسجل في هذه المقرأة', { supervisor_id: 'not_in_maqraa' });
+  }
   const others = SLOTS.filter((s) => s.id !== c.id);
   if (others.some((o) => o.maqraa === c.maqraa && overlaps(span(c), span(o)))) {
     return fail(409, 'conflict', 'يتداخل هذا الموعد مع موعد آخر في نفس المقرأة', { conflict: 'same_maqraa' });
@@ -154,6 +166,19 @@ const applyBody = (target: MockSlot, b: SlotBody): MockSlot => ({
   ...(b.supervisor_id !== undefined && { supervisor: b.supervisor_id }),
   ...(b.notes !== undefined && { notes: b.notes })
 });
+
+const peopleHandlers = [
+  http.get('*/people/', ({ request }) => {
+    const maqraa = Number(new URL(request.url).searchParams.get('maqraa'));
+    if (!Number.isInteger(maqraa) || maqraa <= 0) return fail(400, 'validation_error', '', { maqraa: 'required' });
+    const ctx = scoped(request, maqraa, 'people.view');
+    if (ctx instanceof Response) return ctx;
+    const people: Person[] = Object.entries(ROSTER[maqraa] ?? {}).map(([id, roles]) => ({
+      id: Number(id), full_name: PEOPLE[Number(id)], roles, display_name_formal: '', phone: null
+    }));
+    return HttpResponse.json(people.sort((a, b) => a.full_name.localeCompare(b.full_name, 'ar')));
+  })
+];
 
 const scheduleHandlers = [
   http.get('*/maqraat/:id/sessions/', ({ request, params }) => {
@@ -284,5 +309,6 @@ export const handlers = [
     return me ? HttpResponse.json(me) : unauthenticated();
   }),
 
+  ...peopleHandlers,
   ...scheduleHandlers
 ];
