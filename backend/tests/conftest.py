@@ -1,5 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from rest_framework.test import APIClient
 
 from apps.access.models import MaqraaAccess
@@ -8,6 +9,14 @@ from apps.people.models import Person
 
 User = get_user_model()
 SLUGS = ["qaloun-men", "qaloun-women", "hafs-men", "hafs-women"]
+
+
+@pytest.fixture(autouse=True)
+def _fresh_cache():
+    """Settings are cached in-process; a value set by one test must not leak into the next."""
+    cache.clear()
+    yield
+    cache.clear()
 
 
 @pytest.fixture

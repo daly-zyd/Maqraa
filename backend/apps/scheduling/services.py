@@ -18,7 +18,7 @@ from apps.maqraat import services as maqraat
 from apps.people import services as people
 
 from . import repositories
-from .models import Session, Status
+from .models import Session, SessionReport, Status
 
 WEEK_MINUTES = 7 * 1440
 
@@ -258,6 +258,144 @@ def public_today(slug: str) -> dict:
         if item["sheikh"]:
             item["sheikh"] = {"name": item["sheikh"]["name"]}
     return payload
+
+
+# ---- close-out report ----------------------------------------------------------------------------
+MUSHAF_PAGES = 604
+_RULE = "..................................."
+_BLESSING = {"men": "حفظه الله و رعاه", "women": "حفظها الله و رعاها"}
+
+
+def _mecca_clock(session: Session, hm: time | None, fallback: datetime) -> datetime:
+    """'HH:MM' in Mecca time -> aware UTC datetime on the session's Mecca day (nearest day to the planned start)."""
+    if hm is None:
+        return fallback
+    day = session.start_at.astimezone(timeutil.MECCA).date()
+    candidates = [timeutil.local_to_utc(day + timedelta(days=d), hm, timeutil.MECCA) for d in (-1, 0, 1)]
+    return min(candidates, key=lambda c: abs(c - fallback))
+
+
+def render_report_text(*, title: str, gender: str, corrector: str | None, supervisor: str | None,
+                       students_start: int, students_end: int, page_from: int, page_to: int,
+                       start_mecca: str, end_mecca: str, date_ar: str, notes: str = "") -> str:
+    """The exact layout the supervisors post in the WhatsApp group today, so it can be pasted as is."""
+    lines = ["السلام عليكم ورحمة الله وبركاته", _RULE[:-1], f"تقرير {title} 🌹", _RULE, ""]
+    if corrector:
+        lines += [f"المصحح ✍️ {corrector} {_BLESSING.get(gender, _BLESSING['men'])}", ""]
+    if supervisor:
+        lines += [f"الإشراف 💻 {supervisor}", ""]
+    lines += [
+        f"عدد الطلبة المشاركين : {students_start:02d}",
+        f"عدد الطلبة عند انتهاء المقرأة : {students_end:02d}",
+        f"البداية من الوجه : {page_from}",
+        f"التلاوة إلى الوجه : {page_to}",
+        f"وقت التصحيح من : {start_mecca} إلى {end_mecca} توقيت مكة المكرمة",
+        "",
+        f"اليوم والتاريخ : {date_ar}🗓️",
+        "",
+    ]
+    if notes:
+        lines += [f"ملاحظات : {notes}", ""]
+    lines += [_RULE[:-1], "", "أسأل الله أن يتقبل منا ومنكم صالح الأعمال 🌹🌹"]
+    return "\n".join(lines)
+
+
+def _report_dict(report: SessionReport, session: Session, maqraa) -> dict:
+    ids = [p for p in (report.corrector_id, report.supervisor_id) if p]
+    names = people.names_for(ids)
+    signatures = people.signatures_for(ids)
+    start = session.actual_start or session.start_at
+    end = session.actual_end or session.end_at
+    start_mecca, end_mecca = timeutil.fmt_hm(start, timeutil.MECCA), timeutil.fmt_hm(end, timeutil.MECCA)
+    day = session.start_at.astimezone(_tz(maqraa.pk)).date()
+    text = render_report_text(
+        title=config.get_setting("report_title", maqraa.pk), gender=maqraa.gender,
+        corrector=signatures.get(report.corrector_id), supervisor=signatures.get(report.supervisor_id),
+        students_start=report.students_start, students_end=report.students_end, page_from=report.page_from,
+        page_to=report.page_to, start_mecca=start_mecca, end_mecca=end_mecca, date_ar=timeutil.date_ar(day),
+        notes=report.notes)
+    return {
+        "id": report.pk, "session_id": session.pk, "status": session.status,
+        "corrector": {"id": report.corrector_id, "name": names.get(report.corrector_id)} if report.corrector_id else None,
+        "supervisor": ({"id": report.supervisor_id, "name": names.get(report.supervisor_id)}
+                       if report.supervisor_id else None),
+        "students_start": report.students_start, "students_end": report.students_end,
+        "page_from": report.page_from, "page_to": report.page_to,
+        "actual_start_mecca": start_mecca, "actual_end_mecca": end_mecca, "notes": report.notes,
+        "updated_at": report.updated_at.isoformat(), "whatsapp_text": text,
+    }
+
+
+def _visible_session(actor, maqraa_id: int, session_id: int) -> Session:
+    """A sheikh without view_all only ever reaches their own sessions; anything else is a 404."""
+    session = repositories.get_session(actor, maqraa_id, session_id)
+    if session is None:
+        raise ScopeNotFound()
+    if not access.can(actor, policy.SCHEDULE_VIEW_ALL, maqraa_id) and session.sheikh_id != actor.person_id:
+        raise ScopeNotFound()
+    return session
+
+
+def get_report(actor, maqraa_id: int, session_id: int, *, ip=None) -> dict:
+    access.require(actor, policy.SCHEDULE_VIEW_OWN, maqraa_id, ip=ip)
+    maqraa = maqraat.get_maqraa(actor, maqraa_id, ip=ip)
+    session = _visible_session(actor, maqraa_id, session_id)
+    report = repositories.get_report(actor, session.pk)
+    if report is None:
+        raise ScopeNotFound("لا يوجد تقرير لهذه الحصة بعد")
+    return _report_dict(report, session, maqraa)
+
+
+def _require_can_report(actor, maqraa_id: int, session: Session, ip=None) -> None:
+    if access.can(actor, policy.SESSION_CLOSEOUT, maqraa_id):
+        return
+    if (session.sheikh_id and session.sheikh_id == actor.person_id
+            and config.get_setting("sheikh_can_submit_report", maqraa_id)):
+        return
+    access.require(actor, policy.SESSION_CLOSEOUT, maqraa_id, ip=ip)  # raises the audited 403
+
+
+@transaction.atomic
+def submit_report(actor, maqraa_id: int, session_id: int, *, students_start: int, students_end: int,
+                  page_from: int, page_to: int, actual_start: time | None = None, actual_end: time | None = None,
+                  notes: str = "", ip=None) -> dict:
+    """Create or correct the close-out report; the session becomes `reported`. Every change is audited."""
+    access.require(actor, policy.SCHEDULE_VIEW_OWN, maqraa_id, ip=ip)
+    maqraa = maqraat.get_maqraa(actor, maqraa_id, ip=ip)
+    session = _visible_session(actor, maqraa_id, session_id)
+    _require_can_report(actor, maqraa_id, session, ip)
+    if session.status == Status.CANCELLED:
+        raise ConflictError("هذه الحصة ملغاة", errors={"status": session.status})
+    if session.start_at > timezone.now():
+        raise ValidationFailure("لا يمكن كتابة تقرير قبل بداية الحصة", errors={"session": "not_started"})
+    if students_end > students_start:
+        raise ValidationFailure("عدد الطلبة عند الانتهاء أكبر من عدد المشاركين", errors={"students_end": "gt_start"})
+    if not 1 <= page_from <= page_to <= MUSHAF_PAGES:
+        raise ValidationFailure("أرقام الأوجه غير صحيحة (من 1 إلى 604)", errors={"page_to": "range"})
+    start = _mecca_clock(session, actual_start, session.actual_start or session.start_at)
+    end = _mecca_clock(session, actual_end, session.actual_end or session.end_at)
+    if end <= start:
+        end += timedelta(days=1)
+    if end - start > timedelta(hours=6):
+        raise ValidationFailure("مدة التصحيح غير منطقية", errors={"actual_end": "too_long"})
+
+    existing = repositories.get_report(actor, session.pk)
+    # whoever closes out (supervisor/admin) signs the report when the session had no planned supervisor
+    closer = actor.person_id if access.can(actor, policy.SESSION_CLOSEOUT, maqraa_id) else None
+    before = None if existing is None else {
+        "students": [existing.students_start, existing.students_end], "pages": [existing.page_from, existing.page_to]}
+    report = repositories.save_report(
+        existing, session=session, maqraa_id=maqraa_id,
+        corrector_id=existing.corrector_id if existing else session.sheikh_id,
+        supervisor_id=existing.supervisor_id if existing else (session.supervisor_id or closer),
+        students_start=students_start, students_end=students_end, page_from=page_from, page_to=page_to,
+        notes=notes, submitted_by_id=actor.person_id)
+    session.actual_start, session.actual_end, session.status = start, end, Status.REPORTED
+    repositories.save_session(session, ["actual_start", "actual_end", "status"])
+    audit.record(actor, "session.report" if existing is None else "session.report.update", obj=report,
+                 maqraa_id=maqraa_id, before=before,
+                 after={"students": [students_start, students_end], "pages": [page_from, page_to]}, ip=ip)
+    return _report_dict(report, session, maqraa)
 
 
 # ---- planning import ------------------------------------------------------------------------------

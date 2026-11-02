@@ -37,6 +37,7 @@ _DEFS = [
     SettingDef("daily_image_send_time", "str", "07:00"),
     SettingDef("weekly_image_day", "str", "sunday"),
     SettingDef("report_auto_publish", "bool", False),
+    SettingDef("report_title", "str", "مقرأة بالقرآن نحيا"),  # heading of the WhatsApp close-out report
     SettingDef("supervisor_can_see_phones", "bool", False),
     SettingDef("hijri_adjust_days", "int", 0, min=-2, max=2),
     SettingDef("base_timezone", "str", "Africa/Tunis"),

@@ -74,3 +74,32 @@ class Session(TimestampedModel):
         ]
         indexes = [models.Index(fields=["maqraa", "start_at"]), models.Index(fields=["status", "start_at"]),
                    models.Index(fields=["sheikh", "start_at"])]
+
+
+class SessionReport(TimestampedModel):
+    """Close-out report of one session (the "تقرير مقرأة" posted to the WhatsApp group).
+
+    Corrector and supervisor are frozen at report time: a later substitution or roster change never rewrites history.
+    Pages are mushaf faces (الوجه), 1..604 in the Madina print.
+    """
+
+    session = models.OneToOneField(Session, on_delete=models.CASCADE, related_name="report")
+    maqraa = models.ForeignKey("maqraat.Maqraa", on_delete=models.CASCADE, related_name="+")
+    corrector = models.ForeignKey("people.Person", null=True, blank=True, on_delete=models.PROTECT, related_name="+")
+    supervisor = models.ForeignKey("people.Person", null=True, blank=True, on_delete=models.PROTECT, related_name="+")
+    students_start = models.PositiveSmallIntegerField()
+    students_end = models.PositiveSmallIntegerField()
+    page_from = models.PositiveSmallIntegerField()
+    page_to = models.PositiveSmallIntegerField()
+    notes = models.CharField(max_length=500, blank=True)
+    submitted_by = models.ForeignKey("people.Person", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+
+    objects = SlotQuerySet.as_manager()
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=Q(students_end__lte=models.F("students_start")),
+                                   name="report_students_end_lte_start"),
+            models.CheckConstraint(condition=Q(page_from__gte=1, page_to__lte=604, page_to__gte=models.F("page_from")),
+                                   name="report_pages_range"),
+        ]
