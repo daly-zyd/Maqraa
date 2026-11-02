@@ -15,3 +15,14 @@ class SlotPatchSerializer(SlotWriteSerializer):
         super().__init__(*args, **kwargs)
         for f in self.fields.values():
             f.required = False
+
+
+class ReportWriteSerializer(serializers.Serializer):
+    students_start = serializers.IntegerField(min_value=0, max_value=999)
+    students_end = serializers.IntegerField(min_value=0, max_value=999)
+    page_from = serializers.IntegerField(min_value=1, max_value=604)
+    page_to = serializers.IntegerField(min_value=1, max_value=604)
+    actual_start = serializers.TimeField(required=False, allow_null=True, default=None,
+                                         input_formats=["%H:%M", "%H:%M:%S"])  # Mecca time
+    actual_end = serializers.TimeField(required=False, allow_null=True, default=None, input_formats=["%H:%M", "%H:%M:%S"])
+    notes = serializers.CharField(max_length=500, required=False, allow_blank=True, default="")

@@ -109,3 +109,8 @@ def set_super_admin(actor, *, user_id: int, value: bool, ip=None):
 
 def names_for(person_ids: list[int]) -> dict[int, str]:
     return {pk: p.full_name for pk, p in repositories.names_system(person_ids).items()}
+
+
+def signatures_for(person_ids: list[int]) -> dict[int, str]:
+    """Name with its honorific ('د/ رياض العيد'), as written at the head of a session report."""
+    return {pk: f"{p.honorific} {p.full_name}".strip() for pk, p in repositories.names_system(person_ids).items()}

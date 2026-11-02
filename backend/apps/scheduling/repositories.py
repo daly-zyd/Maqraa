@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db.models import Q
 
-from .models import Session, Status, WeeklyTemplateSlot
+from .models import Session, SessionReport, Status, WeeklyTemplateSlot
 
 
 # ---- slots ----------------------------------------------------------------------------------------
@@ -68,3 +68,25 @@ def sessions_between(actor, maqraa_id: int, start: datetime, end: datetime, *, s
 def sessions_between_system(maqraa_id: int, start: datetime, end: datetime):
     return list(Session.objects.system().filter(maqraa_id=maqraa_id, start_at__gte=start, start_at__lt=end)
                 .exclude(status=Status.CANCELLED).order_by("start_at"))
+
+
+def get_session(actor, maqraa_id: int, session_id: int) -> Session | None:
+    return Session.objects.for_actor(actor).filter(pk=session_id, maqraa_id=maqraa_id).first()
+
+
+# ---- reports --------------------------------------------------------------------------------------
+def get_report(actor, session_id: int) -> SessionReport | None:
+    return SessionReport.objects.for_actor(actor).filter(session_id=session_id).first()
+
+
+def save_report(report: SessionReport | None, **fields) -> SessionReport:
+    if report is None:
+        return SessionReport.objects.create(**fields)
+    for key, value in fields.items():
+        setattr(report, key, value)
+    report.save()
+    return report
+
+
+def save_session(session: Session, fields: list[str]) -> None:
+    session.save(update_fields=[*fields, "updated_at"])

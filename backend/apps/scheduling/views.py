@@ -7,7 +7,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
 from . import services
-from .serializers import SlotPatchSerializer, SlotWriteSerializer
+from .serializers import ReportWriteSerializer, SlotPatchSerializer, SlotWriteSerializer
 
 
 def _ip(request):
@@ -65,6 +65,17 @@ class SessionListView(APIView):
         start = _date(request, "from") or date.today()
         end = _date(request, "to") or start
         return Response(services.list_sessions(request.user, maqraa_id, start, end, ip=_ip(request)))
+
+
+class SessionReportView(APIView):
+    def get(self, request, maqraa_id: int, session_id: int):
+        return Response(services.get_report(request.user, maqraa_id, session_id, ip=_ip(request)))
+
+    def put(self, request, maqraa_id: int, session_id: int):
+        data = ReportWriteSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        return Response(services.submit_report(request.user, maqraa_id, session_id, **data.validated_data,
+                                               ip=_ip(request)))
 
 
 class PublicTodayView(APIView):

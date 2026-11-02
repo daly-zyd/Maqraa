@@ -8,5 +8,7 @@ urlpatterns = [
     path("maqraat/<int:maqraa_id>/generate-sessions/", views.GenerateSessionsView.as_view(), name="generate-sessions"),
     path("maqraat/<int:maqraa_id>/today/", views.TodayBoardView.as_view(), name="today-board"),
     path("maqraat/<int:maqraa_id>/sessions/", views.SessionListView.as_view(), name="session-list"),
+    path("maqraat/<int:maqraa_id>/sessions/<int:session_id>/report/", views.SessionReportView.as_view(),
+         name="session-report"),
     path("public/maqraat/<slug:slug>/today/", views.PublicTodayView.as_view(), name="public-today"),
 ]
